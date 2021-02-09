@@ -1,0 +1,30 @@
+Passwords are entered in the intro screen.
+Press [SHIFT] after a password entry box is visible.
+
+NOSHJE (to Job 2)
+SEQUEL (to Job 3)
+TWITCH (to Job 4)
+MARVEL (to Job 5)
+GIBBET (to Job 6)
+
+PROTEC (Activate immortality)
+EXTRAS (Additional cheats during game, see below for details)
+
+OFF (the passwords not visible after this, was used to keep passwords a secret on fairs and meetings)
+
+If password 'EXTRAS' is activated, these opportunities arise during the game:
+
+[F1]: Add item 'protection tray'
+[F2]: Add item 'shoes' (to jump higher)
+[CLS]: Add a bomb (explosive).
+[INSERT]: Add saliva
+[DEL]: Add vitality.
+
+More extras during paused game (press [STOP] to pause):
+
+[LEFT] + number or letter: Go to according elevator door on the left.
+[RIGHT] + number or letter: Go to according door on the right.
+
+(A maximum of 16 elevator doors are on the left and 16 are on the right;
+[0] is first elevator door, [F] the last one if it exists.
+So with [RIGHT] + [A] you go to the 10th elevator door on the right)

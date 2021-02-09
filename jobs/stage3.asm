@@ -1,0 +1,170 @@
+	;pallet tijdens speelveld
+STAGE3:	
+	DB	003H,000H,027H,004H,014H,000H,042H,002H
+	DB	037H,005H,033H,007H,050H,004H,055H,005H
+	DB	047H,006H,070H,006H,000H,005H,077H,007H
+	DB	000H,003H,074H,004H,027H,001H,000H,000H
+
+PALLET:
+	DB	000H,000H,000H,000H,000H,004H,000H,002H
+	DB	031H,001H,050H,000H,042H,002H,055H,005H
+	DB	075H,005H,030H,000H,070H,000H,077H,007H
+	DB	000H,006H,033H,003H,063H,003H,000H,001H
+
+	;muziek bij linker deuren 0-F
+	DB	1,0, 1,0, 1,0, 1,0, 1,0, 1,0, 1,0, 1,0
+
+	;muziek bij rechter deuren 0-F
+	DB	0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1
+
+	;muziek die bij starten moet worden ingesteld
+	DB	0
+
+	;nr. van het veld
+	DB	3
+
+	;op welk adres moet FRANC starten
+	DW	04052H
+
+	;data t.b.v. pratende kop
+	DB	0,64         ;mond 1
+	DB	16,64        ;mond 2
+	DB	32,64        ;mond 3
+	DB	16,64        ;mond 2
+	DB	16,14        ;breedte x, breedte y
+	DB	6+192,42     ;x-offset,y-offset t.o.v. links-boven van kop
+
+	;tekst bij begin van earl cramp. 3 betekent stoppen
+	DB	"NOW YOU ARE READY TO GO TO A   ",0
+	DB	"GOOD FRIEND OF MINE! YOU MUST  ",0
+	DB	"BRING HIM SOME TOMATO-JUICE    ",0
+	DB	"QUICK !!  HURRY UP! YOU HAVEN'T",0
+	DB	"GOT ALL DAY.....               ",3
+	DB	"                               ",0
+	DB	" WAT EEN KLOTE ZOOI            ",0
+	DB   "                               ",0
+
+	;gesprek bij einde van veld tussen franc en de gast
+	;franc begint te praten. Als '0' aan einde van regel dan
+	;pratende praat gewoon door. Als '1' dan FRANC gaat praten
+	;als '2' dan gast gaat praten, 3 betekent stoppen
+	DB	"HERE YOU ARE...        ",2
+	DB	"THANK YOU... I LIKE    ",0
+	DB	"TOMATO-JUICE...        ",1
+	DB	"I HEARD YOU ARE A      ",0
+	DB	"FRIEND OF EARL CRAMP.  ",2
+	DB	"HUH?? NO, I AM         ",0
+	DB	"CERTAINLY NOT A FRIEND ",0
+	DB	"OF EARL CRAMP !! HE HAS",0
+	DB	"CAPTURED ME...         ",1
+	DB	"I HAVE TO BE HIS BUTLER",0
+	DB	"BECAUSE HE HAS CAPTURED",0
+	DB	"ME TOO !!              ",2
+	DB	"MAYBE YOU CAN RESCUE   ",0
+	DB	"ALL THE CAPTURED GUESTS",0
+	DB	"OF EARL CRAMP....      ",1
+	DB	"I WANT TO BE FREE AGAIN",0
+	DB	"BUT I DON'T KNOW HOW!  ",2
+	DB	"YOU MUST GO ON AND TELL",0
+	DB	"THE OTHER GUESTS THAT  ",0
+	DB	"WE MUST ESCAPE !!      ",3
+
+	;data van vijanden
+
+	DW	03000H
+	DB	0,0,0
+	DW	03000H
+	DB	0,0,0
+	DW	03000H
+	DB	0,0,0
+
+	;DB  LOWadr,HIGHadr,UNIEKEcode,VIJnr,EXTRAinfo
+
+	;VIJnr= 1 voor vogel, EXTRAinfo=tweede LOWadr
+	;     = 2 voor rat
+	;     = 3 voor kangaroe
+	;     = 4 voor spin
+	;     = 5 voor knager
+	;     = 6 voor lift1, EXTRAinfo=aantal(0-63),+64 voor verticaal
+	;                               +128 voor naar boven, naar links
+	;     = 7 voor lift2, EXTRAinfo= idem lift1
+
+	DB	064H,041H,1,5,0
+	DB	06AH,041H,2,5,0
+	DB	04DH,042H,3,1,042H
+	DB	0B3H,042H,4,1,0BAH
+	DB	0F3H,042H,5,3,0
+	DB	0B7H,043H,6,4,0
+	DB	089H,044H,7,1,08DH
+	DB	09AH,045H,9,6,7+64
+	DB	0C4H,045H,8,5,0
+	DB	00AH,046H,9,6,7+192
+	DB	03EH,046H,10,4,0
+	DB	0ACH,046H,11,7,36+64
+	DB	074H,047H,13,2,0
+	DB	0C5H,047H,14,3,0
+	DB	018H,048H,12,1,011H
+	DB	0ECH,048H,11,7,36+192
+	DB	03BH,04CH,15,5,0
+	DB	0E2H,04CH,16,6,8
+	DB	019H,04DH,17,4,0
+	DB	037H,04DH,18,4,0
+	DB	096H,04DH,19,4,0
+	DB	0DBH,04DH,20,4,0
+	DB	002H,04FH,21,2,0
+	DB	008H,04FH,25,1,00DH
+	DB	026H,04FH,22,2,0
+	DB	04BH,04FH,23,2,0
+	DB	006H,050H,24,3,0
+	DB	0D6H,052H,26,1,0DBH
+	DB	013H,053H,27,1,017H
+	DB	08CH,054H,28,4,0
+	DB	081H,055H,29,3,0
+	DB	0FBH,055H,30,4,0
+	DB	0F4H,055H,31,4,0
+	DB	0B4H,056H,35,1,0BDH
+	DB	0CDH,056H,34,1,0C4H
+	DB	0F2H,056H,33,7,64+15
+	DB	0E2H,057H,33,7,192+15
+	DB	0F2H,057H,32,6,5
+	DB	05BH,058H,36,3,0
+	DB	0C2H,059H,37,6,64+30
+	DB	0C3H,059H,38,7,64+20
+	DB	007H,05AH,39,2,0
+	DB	00BH,05AH,40,2,0
+	DB	003H,05BH,38,7,192+20
+	DB	0A2H,05BH,37,6,192+30
+	DB	086H,05CH,42,4,0
+	DB	0F6H,05DH,41,7,64+25
+	DB	086H,05FH,41,7,192+25
+	DB	018H,060H,43,1,01DH
+	DB	0E2H,060H,44,2,0
+	DB	024H,062H,45,1,029H
+	DB	0F6H,062H,46,1,0FCH
+	DB	0D2H,064H,47,4,0
+	DB	0DBH,064H,48,4,0
+	DB	048H,066H,49,4,0
+	DB	0A4H,066H,51,5,0
+	DB	0C1H,066H,50,2,0
+	DB	056H,068H,52,1,05BH
+	DB	095H,068H,53,1,099H
+	DB	0A7H,068H,54,1,0AAH
+	DB	0B8H,068H,55,1,0B9H
+	DB	0D1H,068H,56,2,0
+	DB	0ADH,069H,57,6,64+17
+	DB	0F3H,069H,58,3,0
+	DB	00AH,06AH,59,3,0
+	DB	056H,06AH,60,3,0
+	DB	0BDH,06AH,57,6,192+17
+	DB	023H,06CH,61,4,0
+	DB	02BH,06CH,62,5,0
+	DB	055H,06CH,63,5,0
+	DB	05BH,06CH,64,4,0
+	DB	0E2H,06CH,65,7,64+39
+	DB	0E2H,06DH,66,1,0EBH
+	DB	047H,06EH,67,1,043H
+	DB	092H,06EH,68,1,094H
+	DB	011H,06FH,69,1,019H
+	DB	052H,06FH,65,7,192+39
+
+	DB	000H,0C0H,236,0,0

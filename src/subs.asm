@@ -1,0 +1,2373 @@
+CLRSCRCOMM: DW	0            ;Van (X)
+	DB	0,0          ;Van (Y)
+	DW	0            ;Naar (X)
+	DB	0,0          ;Naar (Y)
+	DW	256          ;Aantal horizontaal
+	DW	256          ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11000000B    ;Commando/Logop
+
+RAMBYTE:	LD	HL,0F344H	;Geeft primaire en secundaire sloten
+	LD	DE,0	;voor RAM op alle pages.
+	LD	B,4	;Invoer: Niets
+RAMBYTE2:	LD	A,(HL)	;Uitvoer: D=primair (outpoort 0a8h)
+	RR	A	;         E=secundair (adres 0FFFFh)
+	RR	D
+	RR	A
+	RR	D
+	RR	A
+	RR	E
+	RR	A
+	RR	E
+	DJNZ	RAMBYTE2
+	RET
+
+RAMROMBYTE: CALL	RAMBYTE	;Geeft primaire en secundaire sloten
+	LD	A,(0FCC1H)	;voor RAM op page 2 en 3 en ROM op page
+	PUSH	AF	;0 en 1.
+	AND	3	;Invoer: Niets
+	LD	B,A	;Uitvoer: D=primair (outpoort 0A8h)
+	ADD	A,A	;         E=secundair (adres 0FFFFh)
+	ADD	A,A
+	OR	B
+	LD	B,A
+	LD	A,D
+	AND	240
+	OR	B
+	LD	D,A
+	POP	AF
+	AND	12
+	LD	B,A
+	SRL	A
+	SRL	A
+	OR	B
+	LD	B,A
+	LD	A,E
+	AND	240
+	OR	B
+	LD	E,A
+	RET
+
+IGETKEYS:	LD	B,A
+	DI
+	IN	A,(0AAH)
+	AND	0F0H
+	ADD	A,B
+	OUT	(0AAH),A
+	EI
+	IN	A,(0A9H)
+	RET
+
+GETKEYS:	LD	B,A
+	IN	A,(0AAH)
+	AND	0F0H
+	ADD	A,B
+	OUT	(0AAH),A
+	IN	A,(0A9H)
+	RET
+
+READINT:	DI
+	LD	A,1
+	OUT	(099H),A
+	LD	A,143
+	OUT	(099H),A
+	IN	A,(099H)
+	LD	A,2
+	OUT	(099H),A
+	LD	A,143
+	OUT	(099H),A
+	IN	A,(099H)
+	RET
+
+READINT2:	DI
+	LD	A,2
+	OUT	(099H),A
+	LD	A,143
+	OUT	(099H),A
+	IN	A,(099H)
+	LD	A,1
+	OUT	(099H),A
+	LD	A,143
+	OUT	(099H),A
+	IN	A,(099H)
+	XOR	A
+	OUT	(099H),A
+	LD	A,143
+	OUT	(099H),A
+	IN	A,(099H)
+	RET
+
+SPRITEPAG0: LD	DE,0000FH
+	JR	SPRITESPAG
+SPRITEPAG1: LD	DE,0011FH
+	JR	SPRITESPAG
+SPRITEPAG2: LD	DE,0022FH
+	JR	SPRITESPAG
+SPRITEPAG3: LD	DE,0033FH
+
+SPRITESPAG: LD	BC,0EF05H
+	CALL	WRTVDP
+	LD	C,6
+	LD	B,E
+	CALL	WRTVDP
+	LD	C,11
+	LD	B,D
+	JP	WRTVDP
+
+SETRDVRAM:	LD	A,H	    ;Stelt het VRAM-adres in (voor lezen)
+	RL	A	    ;Invoer : HL=adres
+	RL	A	    ;	  c=1 voor bovenste 64kb
+	RL	A
+	AND	7
+	OUT	(099H),A
+	LD	A,142
+	OUT	(099H),A
+	LD	A,L
+	OUT	(099H),A
+	LD	A,H
+	AND	03FH
+	OUT	(099H),A
+	RET
+
+ISETRDVRAM: LD	A,H	    ;Stelt het VRAM-adres in (voor lezen)
+	RL	A	    ;Invoer : HL=adres
+	RL	A	    ;	  c=1 voor bovenste 64kb
+	RL	A
+	AND	7
+	DI
+	OUT	(099H),A
+	LD	A,142
+	EI
+	OUT	(099H),A
+	LD	A,L
+	DI
+	OUT	(099H),A
+	LD	A,H
+	AND	03FH
+	EI
+	OUT	(099H),A
+	RET
+
+SETWRVRAM:	LD	A,H	    ;Stelt het VRAM-adres in (voor scrijven)
+            RL     A                   ;Invoer : HL=adres
+            RL     A                   ;         c=1 voor bovenste 64kb
+            RL     A
+            AND    7
+	OUT	(099H),A
+            LD     A,142
+            OUT    (099H),A
+            LD     A,L
+            OUT    (099H),A
+            LD     A,H
+            AND    03FH
+            OR     040H
+            OUT    (099H),A
+            RET
+
+ISETWRVRAM: LD	A,H	    ;Stelt het VRAM-adres in (voor scrijven)
+	RL	A	    ;Invoer : HL=adres
+	RL	A	    ;	  c=1 voor bovenste 64kb
+	RL	A
+	AND	7
+	DI
+	OUT	(099H),A
+	LD	A,142
+	EI
+	OUT	(099H),A
+	LD	A,L
+	DI
+	OUT	(099H),A
+	LD	A,H
+	AND	03FH
+	OR	040H
+	EI
+	OUT	(099H),A
+	RET
+
+WRVRAM:	PUSH	AF	    ;Schijft 1 byte data naar willekeurig
+	CALL	SETWRVRAM	    ;VRAM-adres
+	POP	AF	    ;Invoer :HL=adres, c=1 voor bovenste 64kb
+	OUT	(098H),A	    ;	 A=data
+	RET
+
+RDVRAM:	PUSH	AF	    ;Leest 1 byte data naar willekeurig
+	CALL	SETRDVRAM	    ;VRAM-adres
+	POP	AF	    ;Invoer :HL=adres, c=1 voor bovenste 64kb
+	IN	A,(098H)	    ;Uitvoer:A=data
+	RET
+
+IWRVRAM:	PUSH	AF	    ;Schijft 1 byte data naar willekeurig
+	CALL	ISETWRVRAM	    ;VRAM-adres
+	POP	AF	    ;Invoer :HL=adres, c=1 voor bovenste 64kb
+	OUT	(098H),A	    ;	 A=data
+	RET
+
+IRDVRAM:	PUSH	AF	    ;Leest 1 byte data naar willekeurig
+	CALL	ISETRDVRAM	    ;VRAM-adres
+	POP	AF	    ;Invoer :HL=adres, c=1 voor bovenste 64kb
+	IN	A,(098H)	    ;Uitvoer:A=data
+	RET
+
+VDPCOMM:	LD	A,32	    ;Stuurt 15-bytes data naar de
+	OUT	(099H),A	    ;command-registers van de VDP.
+	LD	A,145	    ;Invoer : HL=startadres van tabel data.
+	OUT	(099H),A
+VDPCOMMB:	IN	A,(099H)
+	BIT	0,A
+	JR	NZ,VDPCOMMB
+	LD	BC,00F9BH
+	OTIR
+	RET
+
+IVDPCOMM:	LD	A,32	    ;Stuurt 15-bytes data naar de
+	DI
+	OUT	(099H),A	    ;command-registers van de VDP.
+	LD	A,145	    ;Invoer : HL=startadres van tabel data.
+	EI
+	OUT	(099H),A
+IVDPCOMMB:	IN	A,(099H)
+	BIT	0,A
+	JR	NZ,IVDPCOMMB
+	LD	BC,00F9BH
+	OTIR
+	RET
+
+VDPCOMM2:	LD	A,32	    ;Stuurt 15-bytes data naar de
+	OUT	(099H),A	    ;command-registers van de VDP.
+            LD     A,145               ;Invoer : HL=startadres van tabel data.
+            OUT    (099H),A
+	CALL	CHECKVDP2
+            LD     BC,00F9BH
+	OTIR
+            RET
+
+CHECKVDP:	IN	A,(099H)
+	AND	1
+	JR	NZ,CHECKVDP
+	RET
+
+CHECKVDP2:	LD	A,2	    ;Kijkt of VDP klaar is, zonee, wacht
+	OUT	(099H),A	    ;Invoer : -
+            LD     A,143
+            OUT    (099H),A
+CHECKVDP2B: IN	A,(099H)
+	AND	1
+	JR	NZ,CHECKVDP2B
+	XOR	A
+            OUT    (099H),A
+            LD     A,143
+            OUT    (099H),A
+            RET
+
+WRTVDP:     LD     A,B
+	OUT	(099H),A
+            LD     A,C
+            OR     128
+            OUT    (099H),A
+            RET
+
+IWRTVDP:	LD	A,B
+	DI
+	OUT	(099H),A
+	LD	A,C
+	OR	128
+	EI
+	OUT	(099H),A
+	RET
+
+WRTVDP9:	LD	A,(0FFE8H)
+	AND	2
+	OR	B
+	OUT	(099H),A
+	LD	A,137
+	OUT	(099H),A
+	RET
+
+IWRTVDP9:	LD	A,(0FFE8H)
+	AND	2
+	OR	B
+	DI
+	OUT	(099H),A
+	LD	A,137
+	EI
+	OUT	(099H),A
+	RET
+
+	;Invoer: C=y-waarde waarop alle sprites gezet worden
+CLEARSPR:	LD	HL,SPRITEATR
+	LD	DE,4
+	LD	B,32
+CLEARSPRB:	LD	(HL),C
+	ADD	HL,DE
+	DJNZ	CLEARSPRB
+	RET
+
+SPRTOVRM:	NOP
+	LD	HL,0F600H	;zet sprite-atributetabel in page 1
+            OR     A
+	CALL	SETWRVRAM
+	LD	HL,SPRITEATR
+	LD	BC,06098H
+	LD	DE,(FRANR23)
+	DEC	E
+SPRTOVRM1B: LD	A,(HL)
+	OR	1
+	CP	219
+	JR	Z,SPRTOVRM1D
+	LD	A,(HL)
+	ADD	A,D
+SPRTOVRM1D: LD	(HL),A
+	ADD	A,E
+	CP	216
+	JR	NZ,SPRTOVRM1C
+	INC	A
+SPRTOVRM1C: OUT	(C),A
+	INC	HL
+	OUTI
+	OUTI
+	OUTI
+	JR	NZ,SPRTOVRM1B
+	XOR	A
+	LD	(ADDSPR),A
+	RET
+
+SPRITEATR:	DB	219,0,156,0,  0,0,  0,0	;spuug, 0.5 dienblad
+	DB	219,0,  4,0,219,0,192,0	;0.5 dienblad, 0.25 franc
+	DB	219,0,196,0,219,0,200,0	;0.5 franc
+	DB	219,0,204,0,219,0,152,0	;0.25 franc,druppel
+	DB	219,0,152,0,219,0,152,0	;druppel,druppel
+	DB	219,0,144,0,219,0,144,0	;kogel,kogel
+	DB	219,0,160,0,219,0,160,0	;spiezen
+	DB	219,0,160,0,219,0,160,0	;spiezen
+	DB	219,0,208,0,219,0,212,0	;vijand 1
+	DB	219,0,216,0,219,0,220,0	;vijand 2
+	DB	219,0,224,0,219,0,228,0	;vijand 3
+	DB	219,0,232,0,219,0,236,0	;vijand 4
+	DB	219,0,240,0,219,0,244,0	;vijand 5
+	DB	219,0,136,0,219,0,140,0	;rotsblok
+	DB	219,0,248,0,219,0,252,0	;lift 1
+	DB	219,0,248,0,219,0,252,0	;lift 2
+
+	;Om kleuren via de interrupt te laten faden
+LETFADE:	LD	(STARTPAL),HL	;Invoer: HL=STARTPALLET
+	LD	(EINDPAL),DE	;        DE=EINDPALLET
+	CALL	FADEINIT	;        A=SNELHEID
+	XOR	A
+	LD	(REGELFADE),A
+	RET
+
+	;Op interrupt-niveau aanroepen en het faden wordt weer geregeld!
+REGELFADE:	RET
+	LD	IX,0
+	LD	IY,0
+	CALL	FADE
+	RET	NC
+	LD	A,0C9H
+	LD	(REGELFADE),A
+	RET
+STARTPAL:	EQU	REGELFADE+3
+EINDPAL:	EQU	REGELFADE+7
+
+FADEINIT:	LD	(FADESPD1),A	;Invoer: HL=startpallet
+	LD	(FADESPD2),A	;        A =snelheid
+	LD	A,8
+	LD	(FADEAANT),A	;8 keer faden
+	XOR	A
+	OUT	(099H),A
+	LD	A,144
+	OUT	(099H),A	;colorregister resetten
+	LD	BC,0209AH
+	OTIR		;start-pallet naar VDP
+	LD	HL,FADEIRED
+	LD	(FADEROUT),HL	;Deze routine als eerste aanroepen
+	OR	A
+	RET
+FADEIRED:	LD	HL,FADEIBLUE
+	LD	(FADEROUT),HL
+	LD	HL,FADETABEL
+	LD	DE,2
+	LD	B,16
+FADEIREDC:	LD	A,(IY+0)
+	OR	15
+	SUB	(IX+0)
+FADEIREDB:	SRA	A
+	SRA	A
+	SRA	A
+	SRA	A
+	LD	(HL),A
+	INC	HL
+	LD	A,(IX+0)
+	SRL	A
+	AND	00111000B
+	LD	(HL),A
+	INC	HL
+	ADD	HL,DE
+	ADD	HL,DE
+	ADD	IX,DE
+	ADD	IY,DE
+	DJNZ	FADEIREDC
+	OR	A
+	RET
+FADEIGREEN: LD	HL,FADEMAAR
+	LD	(FADEROUT),HL
+	LD	HL,FADETABEL+4
+	INC	IX
+	INC	IY
+	JR	FADEIBLGR
+FADEIBLUE:	LD	HL,FADEIGREEN
+	LD	(FADEROUT),HL
+	LD	HL,FADETABEL+2
+FADEIBLGR:	LD	DE,2
+	LD	B,16
+FADEIBLGRC: LD	A,(IY+0)
+	OR	240
+	SUB	(IX+0)
+	OR	240
+	BIT	3,A
+	JR	NZ,FADEIBLGRB
+	AND	15
+FADEIBLGRB: LD	(HL),A
+	INC	HL
+	LD	A,(IX+0)
+	AND	00000111B
+	SLA	A
+	SLA	A
+	SLA	A
+	LD	(HL),A
+	INC	HL
+	ADD	HL,DE
+	ADD	HL,DE
+	ADD	IX,DE
+	ADD	IY,DE
+	DJNZ	FADEIBLGRC
+	OR	A
+	RET
+FADESPD1:	DB	0
+FADESPD2:	DB	0
+FADEAANT:	DB	0
+
+FADE:	DB	0C3H	;Invoer: IX=startpallet
+FADEROUT:	DW	0	;        IY=eindpallet
+FADEMAAR:	LD	HL,FADESPD1
+	OR	A
+	DEC	(HL)
+	RET	NZ
+	INC	HL
+	LD	A,(HL)
+	DEC	HL
+	LD	(HL),A
+	XOR	A
+	OUT	(099H),A
+	LD	A,144
+	OUT	(099H),A
+	LD	HL,FADETABEL
+	LD	B,16
+FADEMAARB:	LD	A,(HL)
+	INC	HL
+	ADD	A,(HL)
+	LD	(HL),A
+	INC	HL
+	SLA	A
+	AND	01110000B
+	LD	C,A
+	LD	A,(HL)
+	INC	HL
+	ADD	A,(HL)
+	LD	(HL),A
+	INC	HL
+	SRL	A
+	SRL	A
+	SRL	A
+	OR	C
+	OUT	(09AH),A
+	LD	A,(HL)
+	INC	HL
+	ADD	A,(HL)
+	LD	(HL),A
+	INC	HL
+	SRL	A
+	SRL	A
+	SRL	A
+	OUT	(09AH),A
+	DJNZ	FADEMAARB
+	LD	HL,FADEAANT
+	DEC	(HL)
+	SCF
+	RET	Z
+	OR	A
+	RET
+FADETABEL:	DS	96
+PALLETLEEG: DS	32	;Een pallet van allemaal zwarte kleuren
+PALLETVOL:	DB	077H,07H,077H,07H,077H,07H,077H,07H
+	DB	077H,07H,077H,07H,077H,07H,077H,07H
+	DB	077H,07H,077H,07H,077H,07H,077H,07H
+	DB	077H,07H,077H,07H,077H,07H,077H,07H
+
+CRAMPPAL:	DB	000H,000H,000H,002H,007H,000H,007H,000H
+            DB   031H,001H,042H,003H,041H,002H,055H,005H
+            DB   055H,005H,020H,000H,064H,005H,077H,007H
+            DB   033H,004H,033H,003H,022H,003H,077H,007H
+
+PAUSE:	EI
+	HALT
+	DJNZ	PAUSE
+	RET
+
+NIETS:	RET
+
+	;Startcoordinaten witte scroll: H=x, L=y
+WITBEGCOR:	LD	A,H
+	LD	(LETTERCOMM+4),A
+	LD	A,L
+	LD	(LETTERCOMM+6),A
+	RET
+	;Zet letter neer: a=letter, automatisch 1 positie verder
+WITPUTLET:	SUB	32
+	ADD	A,A
+	ADD	A,A
+	ADD	A,A
+	LD	(LETTERCOMM),A
+	LD	A,0
+	JR	NC,WITPUTLETB
+	ADD	A,8
+WITPUTLETB: LD	(LETTERCOMM+2),A
+	LD	HL,LETTERCOMM
+	CALL	IVDPCOMM
+	LD	A,(LETTERCOMM+4)
+	ADD	A,8
+	LD	(LETTERCOMM+4),A
+	RET
+	;Kleine menu-letters neerzetten
+LETTERCOMM: DW	0            ;Van (X)
+	DB	191 ,2       ;Van (Y)
+	DW	0            ;Naar (X)
+	DB	0  ,0        ;Naar (Y)
+	DW	8            ;Aantal horizontaal
+	DW	8            ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	00000000B    ;Manier van copieren
+	DB	11010000B    ;Commando/Logop
+
+LINE:	LD	C,12           ;Line (H,L)-(D,E)
+            LD     A,L            ;
+            LD     (LINEG+2),A    ;Invoer : LINEG+8 : kleur
+            SUB    E              ;         LINEG+10: Commando/LogOp
+            JR     NC,LINEB
+            NEG                   ;Opm.: Alleen aanroepen als
+            RES    3,C            ;      STATUS-register 2 gezet is
+LINEB:      LD     B,A
+            LD     A,H
+            LD     (LINEG),A
+            SUB    D
+            JR     NC,LINEC
+            NEG
+            RES    2,C
+LINEC:      SUB    B
+            JR     NC,LINED
+            SET    0,C
+            ADD    A,B
+            LD     (LINEG+6),A
+            LD     A,B
+            LD     (LINEG+4),A
+            LD     A,C
+            LD     (LINEG+9),A
+            JR     LINEE
+LINED:      ADD    A,B
+            LD     (LINEG+4),A
+            LD     A,B
+            LD     (LINEG+6),A
+            LD     A,C
+            LD     (LINEG+9),A
+LINEE:      LD     A,36
+            OUT    (099H),A
+            LD     A,145
+            OUT    (099H),A
+            LD     HL,LINEG
+            LD     C,09BH
+LINEF:      IN     A,(099H)
+            AND    1
+            JR     NZ,LINEF
+            OUTI
+            OUTI
+            OUTI
+            OUTI
+            OUTI
+            OUTI
+            OUTI
+            OUTI
+            OUTI
+            OUTI
+            OUTI
+            RET
+LINEG:	DB	0,0,0,0,0,0,0,0,15,0,01110000B
+
+	;Leest stand van cursors, beide joysticks, SPACE, SHIFT en GRAPH
+	;vuurknoppen (ook SPACE,SHIFT,GRAPH) alleen bij indrukken aktief.
+	;Invoer: (JOYWELKE)=143 voor JOYST1 en 207 voor JOYST2
+	;uitvoer:A &(JOYFIRENU):bit 7    6    5    4    3    2   1    0
+	;		     0    0    TrB  TrA  GRP  0   SHFT SPC
+
+	;	D en (JOYRICHT): bit 7    6    5    4    3    2    1    0
+	;		     0    0    0    0    R    L    D    U
+
+JOYSTICK:	IN	A,(0AAH)
+	AND	0F0H
+	LD	B,A
+	OR	8
+	OUT	(0AAH),A
+	NOP
+	IN	A,(0A9H)
+	CPL
+	AND	11110001B
+	LD	D,A
+	LD	A,B
+	OR	6
+	OUT	(0AAH),A
+	NOP
+	IN	A,(0A9H)
+	CPL
+	SLA	A
+	OR	D
+	AND	00001011B
+	LD	C,A
+	SRL	D
+	SRL	D
+	SRL	D
+	SRL	D
+	LD	A,D
+	AND	8
+	RES	3,D
+	SRL	D
+	JR	NC,JOYSTICK2B
+	OR	4
+JOYSTICK2B: OR	D
+	LD	D,A
+	LD	A,15
+	OUT	(0A0H),A
+	LD	A,(JOYWELKE)
+	OUT	(0A1H),A
+	LD	A,14
+	OUT	(0A0H),A
+	NOP
+	IN	A,(0A2H)
+	CPL
+	OR	D
+	LD	E,A
+	AND	15
+	LD	D,A
+	LD	(JOYRICHT),A
+	LD	A,(JOYLETOP)
+	AND	D
+	LD	(JOYLETOP),A
+	LD	A,E
+	AND	00110000B
+	OR	C
+	LD	BC,(JOYFIREBUF)
+	CPL
+	LD	(JOYFIREBUF),A
+	CPL
+	SET	0,C
+	SET	4,C
+	AND	C
+	LD	(JOYFIRENU),A
+	RET
+JOYFIREBUF: DB	255
+JOYFIRENU:	DB	0
+JOYRICHT:	DB	0
+JOYWELKE:	DB	143	;143 voor joystick 1, 207 voor joystick 2
+JOYLETOP:	DB	0	;Om te kijken of UP losgelaten is
+
+PSGEFF1:	DB	254,7,184,8,14,255,1,4,0,1,1,1,250,15,240,0,15,0,15,253,248,1,65,253,248,1,0BFH,249,252,254,8,0,251
+PSGEFF2:	DB	254,7,184,1,0,255,15,1,1,1,8,15,254,0,40,253,253,253,254,0,42,253,253,253,252,254,8,0,251
+PSGEFF3:	DB	254,7,184,8,15,1,1,255,240,40,1,20,0,240,253,252,254,8,0,251
+PSGEFF4:	DB	254,7,184,8,15,255,15,4,1,1,8,15,254,1,7,0,60,253,253,253,254,1,12,253,253,253,254,8,0,252,251
+PSGEFF5:	DB	254,7,184,1,6,0,50,8,15,255,54,0,1,9,0,54,253,252,254,8,0,251
+PSGEFF6:	DB	254,7,184,8,15,255,15,6,1,3,8,15,254,1,3,0,60,253,253,253,253,254,1,4,253,253,253,253,254,8,0,252,251
+PSGEFF7:	DB	254,7,184,8,13,1,0,255,240,0,1,60,0,240,253,252,254,8,0,251
+PSGEFF8:	DB	254,0,100,1,0,8,15,7,184,255,15,3,1,1,8,15,248,0,0BCH,250,1,3,0,1,14,1
+	DB	253,253,248,0,0B6H,253,253,248,0,74,253,253,249,252,254,8,0,251
+PSGEFF9:	DB	254,7,184,8,15,1,0,255,0,240,0,40,0,0,248,1,69,253,248,1,0BDH,252,254,8,0,251
+PSGEFF10:	DB	254,7,184,8,13,1,0,0,65,253,253,254,0,60,253,253,254,0,35,253,253,254,8,0,251
+PSGEFF11:	DB	254,7,184,8,13,255,200,0,1,10,0,200,254,1,1,248,0,114,253,248,0,08EH,254,1,1,253,252,254,8,0,251
+PSGEFF12:	DB	254,7,184,8,14,1,0,0,70,253,254,0,62,253,254,0,56,253,254,8,0,253,251
+PSGEFF13:	DB	254,7,184,8,15,255,15,5,1,1,8,15,254,1,10,0,55,253,253,254,0,60,253,254,8,0,253,252,251
+PSGEFF14:	DB	254,7,184,8,15,255,2,5,0,1,1,2,250,0,240,0,20,0,0,253,248,1,65,249,252,254,8,0,251
+PSGEFF15:	DB	254,7,184,0,0,1,0,255,15,6,1,1,8,15,254,0,0,1,1,253,254,0,150,253
+	DB	254,0,100,1,2,253,254,1,3,253,254,1,5,253,252,254,0,0,1,0,251
+PSGEFF16:	DB	254,7,176,1,0,0,20,6,24,255,12,15,0,1,8,12,253,248,6,0BDH,248,0,66,253
+	DB	252,250,15,9,1,1,8,15,248,6,0BDH,248,0,66,253,249,254,7,184,0,0,1,0,251
+PSGEFF17:	DB	254,7,184,0,0,1,6,255,15,7,1,2,8,15,253,250,0,6,0,1,14,0,248,1,65,253
+	DB	248,8,0BFH,253,249,248,1,0B9H,253,252,254,8,0,251
+PSGEFF18:	DB	254,1,0,0,30,7,176,6,30,255,15,5,1,1,8,15,248,6,0BDH,253
+	DB	248,0,74,253,252,254,7,184,1,0,0,0,251
+PSGEFF19:	DB	254,1,0,7,176,8,15,255,7,13,0,2,8,7,254,1,1,0,0,6,31,253
+	DB	254,0,100,6,29,253,254,0,200,6,27,253,254,1,2,0,100,6,25,253
+	DB	254,1,200,6,22,253,254,1,3,6,20,253,254,1,4,6,18,253,254,1,6,6,15,253
+	DB	254,1,8,6,12,253,254,1,11,6,9,253,254,1,13,6,5,253,254,1,15,6,0,253,252
+PSGEFF20:	DB	254,7,176,8,15,253,250,15,1,1,2,8,15,254,1,1,0,0,6,31,253
+	DB	254,1,1,0,100,6,29,253,254,1,1,0,200,6,27,253,254,1,2,0,100,6,25,253
+	DB	254,1,2,1,150,6,22,253,254,1,2,1,200,6,22,253,254,1,3,6,20,253
+	DB	254,1,4,6,18,253,254,1,5,6,17,253,254,1,6,6,15,253,254,1,8,6,12,253
+	DB	254,1,11,6,9,253,254,1,13,6,5,253,254,1,15,6,0,253,249,254,0,0,1,0,7,184,251
+PSGEFF21:	DB	254,8,15,7,176,253,254,6,3,1,2,255,40,0,1,2,0,40,253,252,254,8,0,251
+PSGEFF22:	DB	254,8,15,7,176,253,254,6,3,1,2,255,0,40,0,2,0,0,253,252,254,8,0,251
+PSGEFF23:	DB	254,8,15,7,176,1,0,6,0,255,32,47,0,1,0,32,253,248,6,0BFH,253
+	DB	248,8,0BFH,253,253,253,253,253,253,253,252,254,8,0,7,184,251
+PSGEFF24:	DB	254,7,176,8,15,1,0,253,254,0,100,6,16, 255,15,0,1,1,8,15
+	DB	253,254,0,253,253,253,254,0,200,248,6,80,253,252,254,7,184,251
+PSGEFF25:	DB	254,7,184,8,15,255,1,15,0,1,1,1,253,252,248,8,0BEH,255,4,15,0,1,1,1, 253, 252, 248,8,0BEH
+	DB	255,7,15,0,1,1,1,253,252,248,8,0BEH,255,9,15,0,1,1,1, 253, 252, 248,8,0BEH
+	DB	255,10,15,0,1,1,1,253,252,248,8,0BEH,255,11,15,0,1,1,1,253,252,248,8,0BEH
+	DB	255,12,15,0,1,1,1,253,252,248,8,0BEH,255,13,15,0,1,1,1,253,252,248,8,0BFH,251
+PSGEFF26:	DB	254,7,184,8,15,0,100,1,1,255,1,6,0,1,20,1,253,248,1,68,253
+	DB	248,1,0BDH,248,8,0BFH,252,254,8,0,251
+PSGEFF27:	DB	254,7,176,8,15,6,15,253,254,0,18,1,0,255,15,7,1,1,8,15
+	DB	253,248,6,0BFH,253,248,0,0BFH,253,253,252,254,7,184,8,0,251
+PSGEFF28:	DB	254,7,184,1,1,0,0,253,255,15,0,1,1,8,15,248,0,79,253,252,251
+PSGEFF29:	DB	254,7,176,8,12,6,0,253,254,0,247,1,0,255,0,30,0,2,6,0
+	DB	253,250,14,11,1,1,8,14,253,249, 250,12,15,0,1,8,12,253,249
+	DB	248,0,0BBH,252,253,254,8,0,7,184,251
+PSGEFF30:	DB	254,7,176,8,15,6,31,253,254,0,0,1,1,255,15,0,1,1,8,15
+	DB	254,0,75,253,254,0,150,253,254,0,247,253,254,0,150
+	DB	253,254,0,75,253,254,0,0,248,6,0BEH,253,252,254,7,176,251
+PSGEFF31:	DB	254,7,177,8,15,6,8,253,254,8,0,1,0,0,20,7,184,253,254,8,9
+	DB	253,254,7,177,8,13,253,254,8,0,7,184,251
+PSGEFF32:	DB	254,7,177,8,15,6,11,253,254,8,0,1,0,0,20,7,184,253,254,8,10
+	DB	253,254,7,177,8,13,253,254,8,0,7,184,251
+PSGEFF33:	DB	254,7,184,8,15,1,1,0,200,253,254,1,2,253,254,8,0,251
+PSGEFF34:	DB	254,7,176,6,0,253,254,8,15,1,2,0,100,253,253,253
+	DB	253,253,253,253,253,253,253,253,253,253,253,253,253
+	DB	255,15,10,1,1,8,15,253,253,253,252,254,8,0,7,184,251
+PSGEFF35:	DB	254,7,184,1,2,0,0,255,1,4,0,1,20,1,253,254,8,14,253,254,8,11
+	DB	253,254,8,0,253,253,253,253,253,252,251
+PSGEFF36:	DB	254,7,184,8,15,1,1,0,0,253,254,0,200,253,254,8,0,251
+PSGEFF37:	DB	254,7,177,8,13,6,8,253,254,8,0,1,0,0,20,7,184,253,254,8,8
+	DB	253,254,7,177,8,11,253,254,8,0,7,184,251
+PSGEFF38:	DB	254,7,176,1,0,0,30,6,8 ,255,12,15,0,1,8,12,253,248,0BAH,0,248,0,0BEH,253
+	DB	252,250,15,9,1,1,8,15,248,6,67,248,0,0BEH,253,249,254,7,184,0,0,1,0,251
+PSGEFF39:	DB	254,0,50,1,0,7,184,255,15,11,1,1,8,15,253,253,252,255,11,1,1,1,8,11
+	DB	254,0,49,253,253,253,253,254,0,50,253,253,253,252,254,8,0,251
+PSGEFF40:	DB	254,0,128,1,5,12,0,253,254,11,6,8,16,13,8,255,0,25,0,1,20,0
+	DB	253,252,254,8,0,251
+PSGEFF41:	DB	254,7,177,6,25,255,13,11,1,1,8,13,253,248,6,184,253,252
+	DB	255,10,5,1,1,8,10,253,253,253,252,254,8,0,7,184,251 ;+FM7
+
+INITWORLD:	DI
+	CALL	WISBALKEN	;alle balken leeg
+	CALL	WISITEMS
+	CALL	NOODLEEG
+	LD	HL,0
+	LD	(BOMMENG),HL
+	LD	(DEKSELG),HL
+	LD	(SCHOENG),HL
+	LD	(KRACHTG),HL
+	XOR	A
+	LD	(DOODFLAG),A
+	LD	(VERGIF),A
+	LD	(HEBDEKSEL),A
+	LD	HL,00019H
+	LD	(POWERG),HL
+	LD	HL,0000FH
+	LD	(SPUUGG),HL
+	LD	A,(WORLDNR)
+	CP	6
+	JR	Z,INITWORLDL
+	CALL	INITBESTUR
+	JR	INITWORLDV
+INITWORLDL: CALL	INITBESTU2
+INITWORLDV: LD	HL,0F4C0H
+	OR	A
+	CALL	SETWRVRAM
+	LD	B,64
+	LD	A,7
+INITWORLDB: OUT	(098H),A
+	DJNZ	INITWORLDB
+	RET
+
+	;wist alle balken (power,spuug,kracht)
+WISBALKEN:	LD	IX,BALKENDATA
+	LD	B,3
+WISBALKENB: PUSH	BC
+	CALL	WISBALK
+	LD	DE,4
+	ADD	IX,DE
+	POP	BC
+	DJNZ	WISBALKENB
+	RET
+	;wist balk (IX moet wijzen naar data)
+WISBALK:	LD	A,(IX+0)
+	LD	(BALKCOMM1+4),A
+	LD	A,(IX+1)
+	LD	(BALKCOMM1+6),A
+	LD	A,(IX+2)
+	LD	(BALKCOMM1),A
+	LD	B,(IX+3)
+WISBALKB:	PUSH	BC
+	LD	HL,BALKCOMM1
+	CALL	VDPCOMM
+	LD	A,(BALKCOMM1+4)
+	ADD	A,4
+	LD	(BALKCOMM1+4),A
+	POP	BC
+	DJNZ	WISBALKB
+	RET
+BALKENDATA: DB	90,196,132,33	;naar x,naar y, van x, aantal
+	DB	90,205,140,23
+	DB	202,205,148,5
+
+BALKCOMM1:	DW	0            ;Van (X)
+	DB	184,1        ;Van (Y)
+	DW	240          ;Naar (X)
+	DB	195,1        ;Naar (Y)
+	DW	4            ;Aantal horizontaal
+	DW	7            ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11010000B    ;Commando/Logop
+
+WISITEMS:	DI
+	LD	HL,WISITMCOMM
+	JP	VDPCOMM
+WISITMCOMM: DW	0            ;Van (X)
+	DB	0,0          ;Van (Y)
+	DW	0            ;Naar (X)
+	DB	196,1        ;Naar (Y)
+	DW	72           ;Aantal horizontaal
+	DW	16           ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11000000B    ;Commando/Logop
+
+NOODLEEG:	XOR	A
+	LD	(NOODCOMM),A
+	LD	HL,NOODCOMM
+	JP	VDPCOMM
+NOODCOMM:	DW	0            ;Van (X)
+	DB	160,1        ;Van (Y)
+	DW	234          ;Naar (X)
+	DB	196,1        ;Naar (Y)
+	DW	16           ;Aantal horizontaal
+	DW	16           ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11010000B    ;Commando/Logop
+
+	;stelt standaard muziek in. HL=VRAM adres waar muziek zich bevindt
+INITSTMUS:	SCF
+	CALL	SETRDVRAM
+	LD	HL,01800H
+	JR	INITMUSICB
+
+	;Stelt muziekje in. A=0 of 1. Als muziekje al bezig was,
+	;verhoog dan het volume weer
+INITMUSIC:	LD	A,(MUZIEKNR)
+	CP	B
+	JR	Z,INITMUSICD
+INITMUSIC2: LD	A,B
+	LD	(MUZIEKNR),A
+	LD	HL,08000H
+	OR	A
+	JR	Z,INITMUSICC
+	LD	HL,0A800H
+INITMUSICC: SCF
+	CALL	SETRDVRAM
+	LD	HL,01800H
+	LD	BC,02800H
+INITMUSICB: IN	A,(098H)
+	LD	(HL),A
+	INC	HL
+	DEC	BC
+	LD	A,B
+	OR	C
+	JR	NZ,INITMUSICB
+	LD	HL,01800H
+	LD	BC,100
+	CALL	0002DH
+	CALL	00006H
+	LD	HL,01804H
+	CALL	00000H
+	RET
+INITMUSICD: LD	B,4
+	CALL	0000CH
+	RET
+
+	;A=NAAR X, B=GETAL IN BCD NOTATIE
+PUTGETAL:	LD	(TEXTCOMM+4),A
+	LD	A,199
+	LD	(TEXTCOMM+6),A
+	LD	A,B
+	AND	240
+	SRL	A
+	SRL	A
+	LD	C,A
+	SRL	A
+	ADD	A,C
+	ADD	A,128
+	LD	(TEXTCOMM),A
+	PUSH	BC
+	LD	HL,TEXTCOMM
+	CALL	IVDPCOMM
+	POP	BC
+	LD	A,B
+	AND	15
+	SLA	A
+	LD	C,A
+	SLA	A
+	ADD	A,C
+	ADD	A,128
+	LD	(TEXTCOMM),A
+	LD	A,205
+	LD	(TEXTCOMM+6),A
+	LD	HL,TEXTCOMM
+	JP	IVDPCOMM
+TEXTCOMM:	DW	0            ;Van (X)	;om letters te plaatsen
+	DB	176,1        ;Van (Y)
+	DW	0            ;Naar (X)
+	DB	0,1          ;Naar (Y)
+	DW	6            ;Aantal horizontaal
+	DW	5            ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11010000B    ;Commando/Logop
+
+BOMCOMM:	DW	48           ;Van (X)
+	DB	160,1        ;Van (Y)
+	DW	6            ;Naar (X)
+	DB	196,1        ;Naar (Y)
+	DW	16           ;Aantal horizontaal
+	DW	16           ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11010000B    ;Commando/Logop
+
+DEKSCOMM:	DW	96           ;Van (X)
+	DB	160,1        ;Van (Y)
+	DW	30           ;Naar (X)
+	DB	196,1        ;Naar (Y)
+	DW	16           ;Aantal horizontaal
+	DW	16           ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11010000B    ;Commando/Logop
+
+SHOECOMM:	DW	112          ;Van (X)
+	DB	160,1        ;Van (Y)
+	DW	54           ;Naar (X)
+	DB	196,1        ;Naar (Y)
+	DW	16           ;Aantal horizontaal
+	DW	16           ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11010000B    ;Commando/Logop
+
+WISITMCOM2: DW	0            ;Van (X)
+	DB	0,0          ;Van (Y)
+	DW	0            ;Naar (X)
+	DB	196,1        ;Naar (Y)
+	DW	22           ;Aantal horizontaal
+	DW	16           ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11000000B    ;Commando/Logop
+
+	;Variabelen:
+
+BOMMENG:	DB	0	;aantal bommen (geheugen)
+BOMMENP:	DB	0	;aantal bommen (scherm)
+
+DEKSELG:	DB	0	;timer deksel (geheugen)
+DEKSELP:	DB	0	;timer deksel (scherm)
+
+SCHOENG:	DB	0	;timer schoenen (geheugen)
+SCHOENP:	DB	0	;timer schoenen (scherm)
+
+POWERG:	DB	0	;power (geheugen)
+POWERP:	DB	0	;power (scherm)
+
+SPUUGG:	DB	0	;spuug (geheugen)
+SPUUGP:	DB	0	;spuug (scherm)
+
+KRACHTG:	DB	0	;kracht (geheugen)
+KRACHTP:	DB	0	;kracht (scherm)
+
+VERGIF:	DB	0	;als 1 dan vit langzaam minder
+
+;Routines die symbolen onder in het scherm zetten of weghalen
+
+SYMBOLEN:	LD	A,(VOORRFLG)
+	OR	A
+	JP	NZ,VOORRANG
+	LD	IX,SYMBTABVAR
+	INC	(IX+2)
+	BIT	0,(IX+2)
+	JP	Z,BALKEN
+	DEC	(IX+0)
+	LD	A,(IX+0)
+	JR	NZ,SYMBTABELB
+	LD	A,(IX+1)
+	LD	(IX+0),A
+SYMBTABELB: CP	1
+	JR	Z,REGBOM
+	CP	2
+	JP	Z,REGDEKS
+	CP	3
+	JP	Z,REGSHOE
+	JP	REGNOOD
+SYMBTABVAR: DB	4
+SYMBTABCON: DB	4
+SYMBOMENOM: DB	0
+
+REGBOM:	LD	HL,BOMMENP	;zet aantal bommen op scherm
+	LD	A,(BOMMENG)
+	CP	(HL)
+	RET	Z
+	LD	B,(HL)
+	LD	(HL),A
+	OR	A
+	JR	Z,REGBOMB
+	LD	A,B
+	OR	A
+	JR	NZ,REGBOMC
+	LD	HL,BOMCOMM
+	CALL	IVDPCOMM
+REGBOMC:	LD	A,(BOMMENG)
+	LD	B,A
+	XOR	A
+	JP	PUTGETAL
+REGBOMB:	XOR	A
+	LD	(WISITMCOM2+4),A
+	LD	HL,WISITMCOM2
+	JP	IVDPCOMM
+
+REGDEKS:	LD	HL,DEKSELP	;zet deksel incl. timer op scherm
+	LD	A,(DEKSELG)
+	CP	(HL)
+	JR	Z,REGDEKSD
+	LD	B,(HL)
+	LD	(HL),A
+	OR	A
+	JR	Z,REGDEKSB
+	LD	A,B
+	OR	A
+	JR	NZ,REGDEKSC
+	LD	HL,DEKSCOMM
+	CALL	IVDPCOMM
+REGDEKSC:	LD	A,(DEKSELG)
+	LD	B,A
+	LD	A,24
+	CALL	PUTGETAL
+REGDEKSD:	LD	HL,REGDEKST
+	INC	(HL)
+	LD	A,(HL)
+	AND	15
+	RET	NZ
+	LD	A,(DEKSELG)
+	SUB	1
+	RET	C
+	DAA
+	LD	(DEKSELG),A
+	RET
+REGDEKSB:	LD	A,24
+	LD	(WISITMCOM2+4),A
+	LD	HL,WISITMCOM2
+	JP	IVDPCOMM
+REGDEKST:	DB	0
+
+REGSHOE:	LD	HL,SCHOENP	;zet deksel incl. timer op scherm
+	LD	A,(SCHOENG)
+	CP	(HL)
+	JR	Z,REGSHOED
+	LD	B,(HL)
+	LD	(HL),A
+	OR	A
+	JR	Z,REGSHOEB
+	LD	A,B
+	OR	A
+	JR	NZ,REGSHOEC
+	LD	HL,SHOECOMM
+	CALL	IVDPCOMM
+REGSHOEC:	LD	A,(SCHOENG)
+	LD	B,A
+	LD	A,48
+	CALL	PUTGETAL
+REGSHOED:	LD	HL,REGSHOET
+	INC	(HL)
+	LD	A,(HL)
+	AND	15
+	RET	NZ
+	LD	A,(SCHOENG)
+	SUB	1
+	RET	C
+	DAA
+	LD	(SCHOENG),A
+	RET
+REGSHOEB:	LD	A,48
+	LD	(WISITMCOM2+4),A
+	LD	HL,WISITMCOM2
+	JP	IVDPCOMM
+REGSHOET:	DB	0
+
+REGNOOD:	LD	HL,REGNOODWAI
+	INC	(HL)
+	LD	A,(HL)
+	AND	3
+	RET	NZ
+	LD	IX,REGNOODDAT
+	LD	B,16
+	LD	A,(VERGIF)
+	OR	A
+	JR	NZ,REGNOODB
+	LD	B,0
+REGNOODB:	LD	(IX+0),B
+	LD	B,32
+	LD	A,(SPUUGG)
+	CP	6
+	JR	C,REGNOODC
+	LD	B,0
+REGNOODC:	LD	(IX+1),B
+	LD	A,(POWERG)
+	CP	9
+	JR	C,REGNOODD
+	LD	(IX+2),0
+	LD	(IX+3),0
+	JR	REGNOODE
+REGNOODD:	LD	(IX+2),64
+	LD	(IX+3),80
+REGNOODE:	LD	HL,(REGNOODPNT)
+	LD	B,4
+REGNOODF:	LD	A,(HL)
+	CP	255
+	JR	NZ,REGNOODG
+	LD	HL,REGNOODDAT
+	LD	A,(HL)
+REGNOODG:	INC	HL
+	OR	A
+	JR	NZ,REGNOODH
+	DJNZ	REGNOODF
+	XOR	A
+REGNOODH:	LD	(REGNOODPNT),HL
+	LD	(NOODCOMM),A
+	LD	HL,NOODCOMM
+	JP	IVDPCOMM
+
+REGNOODWAI: DB	0
+REGNOODDAT: DB	0,0,0,0,255
+REGNOODPNT: DW	REGNOODDAT
+
+REGKRACHT:	NOP
+	LD	A,144
+	LD	(BALKCOMM1),A
+	LD	A,205
+	LD	(BALKCOMM1+6),A
+	LD	A,(JOYFIRENU)
+	AND	00010001B
+	JR	Z,REGKRACHTC
+
+	LD	A,(REGKRACHTT)
+	OR	A
+	JR	NZ,REGKRACHTB
+	LD	A,(KRACHTG)
+	INC	A
+	CP	6
+	JR	C,REGKRACHTD
+	LD	A,5
+REGKRACHTD: LD	(KRACHTG),A
+	CALL	REGKRACHTE
+	LD	A,4
+REGKRACHTB: DEC	A
+	LD	(REGKRACHTT),A
+	LD	IX,KRACHTG
+	LD	D,202
+	JP	REGBALK
+REGKRACHTH: LD	A,(REGKRACHTT)
+	SUB	1
+	RET	C
+	LD	(REGKRACHTT),A
+	RET
+	;vuren...
+REGKRACHTC: LD	IX,KRACHTG
+	LD	D,202
+	CALL	REGBALK
+	LD	A,(KRACHTG)
+	OR	A
+	JR	Z,REGKRACHTH
+	LD	C,A
+	LD	A,(FRANCSTAT)
+	CP	3
+	RET	NC
+	LD	A,(SPUUGFLAG)
+	OR	A
+	RET	NZ
+	;spugen initialiseren
+	LD	A,C
+	INC	A
+	LD	(SPUUGSPD),A
+	LD	HL,SPUUGDATA
+	LD	(SPUUGPOINT),HL
+	LD	BC,0010AH
+	LD	A,(FRANCRICH)
+	OR	A
+	JR	Z,REGKRACHTS
+	LD	BC,00202H
+REGKRACHTS: LD	A,B
+	LD	(SPUUGFLAG),A
+	LD	A,(SPRITEATR+13)
+	ADD	A,C
+	LD	(SPRITEATR+1),A
+	LD	A,(SPRITEATR+12)
+	ADD	A,8
+	LD	(SPRITEATR),A
+	LD	A,(CHEATADR)
+	OR	A
+	JR	NZ,NODECREM
+	LD	A,(SPUUGG)
+	DEC	A
+	LD	(SPUUGG),A
+NODECREM:	XOR	A
+	LD	(KRACHTG),A
+	LD	HL,PSGEFF28
+	JP	0001BH
+SPAFNDAT:	DB	1,1,2,2,3
+
+	;controleren of genoeg spuug voor die kracht
+REGKRACHTE: LD	A,(SPUUGG)
+	OR	A
+	RET	NZ
+	LD	(KRACHTG),A
+	RET
+
+REGKRACHTT: DB	0
+
+	;brengt de waarde van een balk in stapjes naar juiste waarde
+	;invoer; IX=pointer naar variabelen, D=startX van balk.
+	;	  ook variabelen in BALKCOMM1 aanpassen
+REGBALK:	LD	A,(IX+0)
+	CP	(IX+1)
+	RET	Z
+	JR	C,REGBALK2
+	LD	A,(IX+1)
+	INC	(IX+1)
+	ADD	A,A
+	ADD	A,A
+	ADD	A,D
+	LD	(BALKCOMM1+4),A
+	LD	A,(BALKCOMM1)
+	AND	11111011B
+	LD	(BALKCOMM1),A
+	LD	HL,BALKCOMM1
+	JP	IVDPCOMM
+REGBALK2:	DEC	(IX+1)
+	LD	A,(IX+1)
+	ADD	A,A
+	ADD	A,A
+	ADD	A,D
+	LD	(BALKCOMM1+4),A
+	LD	A,(BALKCOMM1)
+	OR	4
+	LD	(BALKCOMM1),A
+	LD	HL,BALKCOMM1
+	JP	IVDPCOMM
+
+	;regelt spuug en power-balk
+BALKEN:	CALL	POWERDECV ;als vergif, dan soms POWERDEC
+	LD	A,128
+	LD	(BALKCOMM1),A
+	LD	A,196
+	LD	(BALKCOMM1+6),A
+	LD	IX,POWERG
+	LD	D,90
+	CALL	REGBALK
+	LD	A,136
+	LD	(BALKCOMM1),A
+	LD	A,205
+	LD	(BALKCOMM1+6),A
+	LD	IX,SPUUGG
+	LD	D,90
+	CALL	REGBALK
+	CALL	REGKRACHT
+	CALL	SCANKEYB
+	LD	A,(SCANHUIDIG)
+	AND	128
+	JP	NZ,XOREFFECT
+	LD	A,(SCANHUIDIG+1)
+	BIT	0,A
+	JP	NZ,XORMUSIC
+	BIT	1,A
+	JP	NZ,KILLHIM
+	BIT	4,A
+	JP	NZ,PAUZE
+	LD	A,(CHEATADR2)
+	OR	A
+	RET	Z
+	JP	NEWITEMS
+
+XOREFFECT:	LD	A,(0001BH)
+	XOR	00AH
+	LD	(0001BH),A
+	RET
+
+KILLHIM:	LD	A,1
+	LD	(DOODFLAG),A
+	RET
+
+SCANKEYB:	LD	C,6	;Kijkt of F1 of F2 worden bediend en
+	LD	HL,SCANVORIG	;veranderd de sleutelinstellingen
+	LD	DE,SCANHUIDIG
+SCANKEYBB:	IN	A,(0AAH)
+	AND	0F0H
+	OR	C
+	DI
+	OUT	(0AAH),A
+	IN	A,(0A9H)
+	EI
+	LD	B,(HL)
+	LD	(HL),A
+	XOR	255
+	AND	B
+	LD	(DE),A
+	INC	HL
+	INC	DE
+	INC	C
+	LD	A,C
+	CP	9	;Laatste rijnummer + 1
+	JR	NZ,SCANKEYBB
+	RET
+SCANVORIG:	DS	3
+SCANHUIDIG: DS	3
+
+LOOKKEYB:	LD	C,0	;Kijkt of F1 of F2 worden bediend en
+	LD	HL,LOOKVORIG	;veranderd de sleutelinstellingen
+	LD	DE,LOOKHUIDIG
+LOOKKEYBB:	IN	A,(0AAH)
+	AND	0F0H
+	OR	C
+	DI
+	OUT	(0AAH),A
+	IN	A,(0A9H)
+	EI
+	LD	B,(HL)
+	LD	(HL),A
+	XOR	255
+	AND	B
+	LD	(DE),A
+	INC	HL
+	INC	DE
+	INC	C
+	LD	A,C
+	CP	9	;Laatste rijnummer + 1
+	JR	NZ,LOOKKEYBB
+	RET
+LOOKVORIG:	DS	10
+LOOKHUIDIG: DS	10
+
+XORMUSIC:	LD	A,(00000H)
+	XOR	10
+	LD	(00000H),A
+	LD	(00003H),A
+	CP	0C9H
+	JR	Z,XORMUSICB
+	DI
+	LD	HL,01804H
+	CALL	0
+	EI
+	RET
+XORMUSICB:	CALL	00006H
+	EI
+	RET
+
+PAUZE:	LD	B,7
+	CALL	00009H
+	LD	A,(BESTUR)
+	PUSH	AF
+	LD	A,0C9H
+	LD	(BESTUR),A
+PAUZEC:	LD	B,5
+	CALL	PAUSE
+	CALL	LOOKKEYB
+	LD	B,0
+	LD	A,(LOOKHUIDIG)
+	BIT	0,A
+	JP	NZ,WARP
+	INC	B
+	BIT	1,A
+	JP	NZ,WARP
+	INC	B
+	BIT	2,A
+	JP	NZ,WARP
+	INC	B
+	BIT	3,A
+	JP	NZ,WARP
+	INC	B
+	BIT	4,A
+	JP	NZ,WARP
+	INC	B
+	BIT	5,A
+	JP	NZ,WARP
+	INC	B
+	BIT	6,A
+	JP	NZ,WARP
+	INC	B
+	BIT	7,A
+	JP	NZ,WARP
+	INC	B
+	LD	A,(LOOKHUIDIG+1)
+	BIT	0,A
+	JP	NZ,WARP
+	INC	B
+	BIT	1,A
+	JP	NZ,WARP
+	LD	A,(LOOKHUIDIG+2)
+	INC	B
+	BIT	6,A
+	JP	NZ,WARP
+	INC	B
+	BIT	7,A
+	JP	NZ,WARP
+	LD	A,(LOOKHUIDIG+3)
+	INC	B
+	BIT	0,A
+	JP	NZ,WARP
+	INC	B
+	BIT	1,A
+	JP	NZ,WARP
+	INC	B
+	BIT	2,A
+	JP	NZ,WARP
+	INC	B
+	BIT	3,A
+	JP	NZ,WARP
+	LD	A,(LOOKHUIDIG+7)
+	BIT	4,A
+	JP	Z,PAUZEC
+	POP	AF
+	LD	(BESTUR),A
+	LD	B,7
+	CALL	0000CH
+	XOR	A
+	LD	(KNOPPEN),A
+	EI
+	RET
+WARP:	LD	A,(CHEATADR2)
+	OR	A
+	JP	Z,PAUZEC
+	PUSH	BC
+	LD	A,8
+	DI
+	CALL	GETKEYS
+	EI
+	POP	BC
+	CP	01111111B
+	JR	Z,WARPR
+	CP	11101111B
+	JR	Z,WARPL
+	JP	PAUZEC
+WARPR:	LD	A,240
+	ADD	A,B
+	JR	WARPL2
+WARPL:	LD	A,208
+	ADD	A,B
+WARPL2:	LD	HL,04000H
+	LD	BC,03000H
+	CPIR
+	LD	A,H
+	CP	070H
+	JP	Z,PAUZEC
+	DEC	HL
+	LD	A,L
+	AND	15
+	JR	Z,WARPL3
+	DEC	L
+	JR	WARPL4
+WARPL3:	INC	L
+WARPL4:	PUSH	HL
+	LD	HL,JOBDATA
+	LD	DE,PALLETLEEG
+	LD	A,2
+	CALL	LETFADE
+	LD	B,20
+	CALL	PAUSE
+	POP	HL
+	CALL	NEWPLACE
+	LD	HL,PALLETLEEG
+	LD	DE,JOBDATA
+	LD	A,2
+	CALL	LETFADE
+	JP	PAUZEC
+
+	;Routine om dingen te laten timen via de interrupt
+	;verhoog iedere interrupt (NEGCOUNT)
+
+INTERTIME:	LD	BC,(INTERTIMEC)
+INTERTIMEB: LD	A,(NEGCOUNT)
+	CP	C
+	JR	Z,INTERTIMEB
+	LD	(INTERTIMEC),A
+	RET
+INTERTIMEC: DB	0
+NEGCOUNT:	DB	0
+
+FRANFIADR:	DW	0	;Eerste adres (deelbaar door 16)
+FRANFIADR2: DW	0	;Eerste adres (de preciese)
+FRANR23:	DB	0	;waarde van VDP-register 23
+ADDSPR:	DB	0	;waarde die in interrupt bij sprites-y komt
+FIPOINT:	DB	0	;van -16 t/m 16 (gescrollde aantal punten)
+BLOKSUBY:	DB	0	;dit getal aftrekken van y-coordin. blokput
+FRANLAADR:	DW	0	;Laatste adres (deelbaar door 16)
+FRANLAADR2: DW	0	;Laatste adres (de preciese)
+LAPOINT:	DB	0	;van -16 t/m 16 (gescrollde aantal punten)
+TELBYTE:	DB	0	;optellen bij sprites-y voor neer zetten
+KNOPPEN:	DB	0	;copy van (FIRENU) voor buiten interrupt
+MUZIEKNR:	DB	0	;Het huidige muziekje (0 of 1)
+VOORRADR:	DW	0	;adres voor voorrangsroutine
+VOORRFLG:	DB	0	;flag van voorrangsroutine(1=barst,2=weghln)
+FRANCKNIP:	DB	0	;teller voor knipperen FRANC
+DOODFLAG:	DB	0	;=1 als dood moet gaan
+	;Deze routine bouwdt een scherm op en berekent de coordinaten
+	;waarop FRANC moet beginnen.
+	;Invoer: HL=RAM-adres
+
+NEWPLACE:	PUSH	HL
+	LD	C,219
+	CALL	CLEARSPR
+	POP	HL
+	LD	A,L
+	AND	00001111B	;X-coordinaat FRANC berekenen
+	SLA	A
+	SLA	A
+	SLA	A
+	SLA	A
+	LD	(SPRITEATR+13),A
+	LD	(SPRITEATR+17),A
+	LD	(SPRITEATR+21),A
+	LD	(SPRITEATR+25),A
+	LD	BC,96
+	OR	A
+	SBC	HL,BC
+	LD	A,L
+	AND	240
+	LD	L,A
+	LD	B,80
+NEWPLACEB:	LD	A,H
+	CP	040H
+	JR	NC,NEWPLACEC
+	LD	A,L
+	AND	240
+	CP	0F0H
+	JR	NC,NEWPLACEC
+	LD	DE,16
+	ADD	HL,DE
+	LD	A,B
+	SUB	16
+	LD	B,A
+	JR	NEWPLACEB
+NEWPLACEC:	LD	A,H
+	CP	06FH
+	JR	C,NEWPLACED
+	LD	A,L
+	AND	240
+	CP	040H
+	JR	C,NEWPLACED
+	LD	DE,16
+	OR	A
+	SBC	HL,DE
+	LD	A,B
+	ADD	A,16
+	LD	B,A
+	JR	NEWPLACEC
+NEWPLACED:	LD	(FRANFIADR),HL
+	LD	(FRANFIADR2),HL
+	PUSH	HL
+	LD	DE,000E0H
+	ADD	HL,DE
+	LD	(FRANLAADR),HL
+	LD	(FRANLAADR2),HL
+	LD	A,B
+	LD	(SPRITEATR+12),A
+	LD	(SPRITEATR+16),A
+	ADD	A,16
+	LD	(SPRITEATR+20),A
+	LD	(SPRITEATR+24),A
+	LD	A,255
+	LD	(VIJTABEL+8),A
+	LD	(VIJTABEL+18),A
+	LD	(VIJTABEL+28),A
+	LD	(VIJTABEL+38),A
+	LD	(VIJTABEL+48),A
+	LD	(JOYFIREBUF),A
+	XOR	A
+	LD	(KRACHTG),A
+	LD	(SPUUGFLAG),A
+	LD	(FRANCKNIP),A
+	LD	(LIFTDATA+0),A
+	LD	(LIFTDATA+8),A
+	LD	(VOORRFLG),A
+	LD	(VIJTABEL),A
+	LD	(VIJTABEL+10),A
+	LD	(VIJTABEL+20),A
+	LD	(VIJTABEL+30),A
+	LD	(VIJTABEL+40),A
+	LD	(WATERDATA),A
+	LD	(WATERDATA+8),A
+	LD	(WATERDATA+16),A
+	LD	(KANONDATA),A
+	LD	(KANONDATA+9),A
+	LD	(SPIESDATA),A
+	LD	(SPIESDATA+5),A
+	LD	(FIPOINT),A
+	LD	(LAPOINT),A
+	LD	(FRANR23),A
+	LD	(ADDSPR),A	;Wordt bij sprites-y opgeteld in interrupt
+	LD	(TELBYTE),A	;zoveel bij sprites optellen voor neerzetten
+	LD	HL,SPRITEATR+28 ;sprites van vijanden wegzetten
+	LD	DE,4
+	LD	B,19
+NEWPLACEE:	LD	(HL),219
+	ADD	HL,DE
+	DJNZ	NEWPLACEE
+	POP	HL
+	DI
+	LD	BC,00017H
+	CALL	WRTVDP
+	LD	BC,0BE13H
+	CALL	WRTVDP
+	EI
+	CALL	BUILTSCR
+	LD	A,(FRANFIADR)
+	AND	240
+	ADD	A,16
+	LD	(BLOKSUBY),A
+	CALL	VIJGIVADR
+	CALL	INITVIJS
+	LD	B,3
+NEWPLACEP:	PUSH	BC
+	EI
+	HALT
+	CALL	COPYFRANC
+	CALL	VIJBEZ
+	CALL	MLIFT
+	CALL	COPYFRANC
+	CALL	VIJBEZ
+	CALL	MLIFT
+	CALL	COPYFRANC
+	CALL	VIJBEZ
+	CALL	MLIFT
+	POP	BC
+	DJNZ	NEWPLACEP
+	LD	A,219
+	LD	(SPRITEATR),A
+	CALL	OPADRESS
+	LD	A,(DRAAGDIEN)
+	CP	6
+	RET	NZ
+	LD	HL,(SPRITEATR+12)
+	LD	A,L
+	SUB	16
+	LD	L,A
+	LD	(SPRITEATR+8),HL
+	LD	(SPRITEATR+4),HL
+	RET
+
+BUILTSCR:	LD	DE,0F000H	;Bouwdt scherm op (HL=eerste RAM adres)
+	LD	B,14
+BUILTSCRE:	PUSH	DE
+	PUSH	BC
+	LD	B,16
+BUILTSCRF:	PUSH	BC
+	PUSH	HL
+	PUSH	DE
+	CALL	PUTSCREEN
+	POP	DE
+	POP	HL
+	POP	BC
+	INC	HL
+	LD	A,E
+	ADD	A,16
+	LD	E,A
+	DJNZ	BUILTSCRF
+	POP	BC
+	POP	DE
+	LD	A,D
+	ADD	A,16
+	LD	D,A
+	DJNZ	BUILTSCRE
+	RET
+
+	;Invoer: HL=RAM adres, DE=y,x
+
+PUTSCREEN:	LD	A,E
+	LD	(PUTSCRCOMM+4),A
+	LD	A,D
+	LD	(PUTSCRCOMM+6),A
+	LD	A,(HL)
+	CP	136
+	JR	C,PUTSCREENB
+	CP	152
+	JR	NC,PUTSCREENB
+	CP	140
+	JP	Z,ISPIES
+	CP	141
+	JP	Z,ISPIES
+	CP	136
+	JP	Z,IWATER
+	CP	138
+	JP	Z,IWATER
+	CP	145
+	JP	Z,IKANONR
+	CP	149
+	JP	Z,IKANONL
+PUTSCREENB: LD	E,(HL)
+	LD	D,0
+	LD	HL,PUTSCRDATA
+	ADD	HL,DE
+	LD	A,(HL)
+	AND	15
+	SLA	A
+	SLA	A
+	SLA	A
+	SLA	A
+	LD	(PUTSCRCOMM),A
+	LD	A,(HL)
+	AND	240
+	LD	(PUTSCRCOMM+2),A
+	LD	HL,PUTSCRCOMM
+	JP	IVDPCOMM
+
+	;Invoer: HL=RAM adres
+
+BLOKONSCR:	LD	DE,(FRANFIADR2)
+	LD	A,H
+	CP	D
+	RET	C
+	JR	NZ,BLOKONSCRB
+	LD	A,L
+	CP	E
+	RET	C
+BLOKONSCRB: LD	DE,(FRANLAADR2)
+	LD	A,H
+	CP	D
+	JR	C,BLOKONSCRC
+	RET	NZ
+	LD	A,L
+	CP	E
+	JR	C,BLOKONSCRC
+	RET	NZ
+BLOKONSCRC: LD	A,(BLOKSUBY)
+	LD	B,A
+	LD	A,L
+	AND	240
+	SUB	B
+	LD	(PUTSCRCOMM+6),A
+	LD	A,L
+	SLA	A
+	SLA	A
+	SLA	A
+	SLA	A
+	LD	(PUTSCRCOMM+4),A
+	LD	E,(HL)
+	LD	D,0
+	LD	HL,PUTSCRDATA
+	ADD	HL,DE
+	LD	A,(HL)
+	AND	15
+	SLA	A
+	SLA	A
+	SLA	A
+	SLA	A
+	LD	(PUTSCRCOMM),A
+	LD	A,(HL)
+	AND	240
+	LD	(PUTSCRCOMM+2),A
+	LD	HL,PUTSCRCOMM
+	JP	IVDPCOMM
+
+PUTSCRCOMM: DW	0            ;Van (X)	;om letters te plaatsen
+	DB	0,1          ;Van (Y)
+	DW	0            ;Naar (X)
+	DB	0,0          ;Naar (Y)
+	DW	16           ;Aantal horizontaal
+	DW	16           ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11010000B    ;Commando/Logop
+
+	;conversietabel. van level-data naar blokje voor op scherm
+PUTSCRDATA: DB	0,1,2,3, 4,5,6,7, 28,29,30,31, 48,49,50,51
+	DB	32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47
+	DB	80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95
+	DB	96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111
+	DB	146,147,144,145, 150,151,148,149
+	DB	152,153,154,155, 156,157,158,159
+	DB	168,169,170,171, 172,173,174,175
+	DB	176,177,178,179,180,181,182,183
+	DB	68,69,70,71,72,73,74,75,76,77,78,79,191,191,191,191
+	DB	191,191,191,191,191,191,191,191
+	DB	191,191,191,191,191,191,191,191
+	DB	16,17,19,18, 20,191,191,191
+	DB	21,191,22,191, 23,24,191,191
+	DB	191,26,191,191, 191,27,191,191
+	DB	25,189,188,191, 11,15,191,191
+	DB	191,191,191,191,191,191,191,191
+	DB	191,191,191,191,191,191,191,191
+	DB	191,191,191,191,191,191,191,191
+	DB	191,191,191,191,191,191,191,191
+	DB	8,10,191,191,191,191,191,191
+	DB	191,191,191,191,191,191,191,191
+	DB	9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9
+	DB	12,14,191,191,191,191,191,191
+	DB	191,191,191,191,191,191,191,191
+	DB	13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13
+
+	;zet kleuren van FRANC. invoer: HL wijst naar kleuren
+FRANCOLOR:	LD	A,3
+	OUT	(099H),A
+	LD	A,142
+	OUT	(099H),A
+	LD	A,030H
+	OUT	(099H),A
+	LD	A,074H
+	OUT	(099H),A
+	LD	BC,04098H
+	OTIR
+	RET
+
+	;zet kleuren van dienblad. HL wijst naar kleuren
+DIENCOLOR:	LD	A,3
+	OUT	(099H),A
+	LD	A,142
+	OUT	(099H),A
+	LD	A,010H
+	OUT	(099H),A
+	LD	A,074H
+	OUT	(099H),A
+	LD	BC,02098H
+	OTIR
+	RET
+
+	;  KLEUREN VAN FRANC
+
+	;kleuren FRANC tijdens lopen en springen
+FRCOLDATA1: DB	00dh,00dh,00dh,00dh,00dH,00dH,00dH,00dH
+	DB	00dh,00dh,00dh,00dh,00dH,00bH,00bH,00bH
+	DB	043h,043h,043h,043h,043H,043H,043H,043H
+	DB	043h,043h,043h,043h,047H,047H,047H,047H
+	DB	00bh,00bh,00bh,00bh,00bH,00dH,00dH,00dH
+	DB	001h,001h,001h,001h,003H,003H,003H,003H
+	DB	047h,047h,047h,047h,047H,047H,047H,04eH
+	DB	04eh,04eh,04eh,04eh,04eH,04eH,04eH,04eH
+	;kleuren FRANC tijdens bukken
+FRCOLDATA2: DB	00dh,00dh,00dh,00dh,00dH,00dH,00dH,00dH
+	DB	00dh,00dh,00dh,00dh,00dH,00dH,00dH,00dH
+	DB	043h,043h,043h,043h,043H,043H,043H,043H
+	DB	043h,043h,043h,043h,043H,043H,043H,043H
+	DB	00dh,007h,007h,007h,007H,00eH,00eH,00eH
+	DB	00eh,00eh,00eh,00eh,00eH,00eH,00eH,00eH
+	DB	043h,04bh,04bh,04bh,04bH,04bH,04bH,04bH
+	DB	04dh,04dh,041h,041h,043H,043H,043H,043H
+	;kleuren FRANC tijdens vallen
+FRCOLDATA3: DB	007h,007h,007h,007h,007H,00dH,00dH,00dH
+	DB	00dh,00dh,00dh,00dh,00dH,00dH,00dH,00dH
+	DB	04bh,04bh,04bh,04bh,04bH,04bH,04bH,043H
+	DB	043h,043h,043h,043h,043H,043H,04bH,047H
+	DB	00dh,00bh,00bh,00bh,00bH,00bH,00bH,00bH
+	DB	00bh,001h,001h,001h,003H,003H,003H,003H
+	DB	04bh,047h,047h,047h,047H,047H,047H,047H
+	DB	047h,04eh,04eh,04eh,04eH,04eH,04eH,04eH
+	;kleuren FRANC als dood
+FRCOLDATA4: DB	003h,003h,003h,003h,003H,003H,003H,003H
+	DB	003h,003h,003h,003h,003H,003H,003H,003H
+	DB	04dh,04dh,04dh,04dh,04dH,04dH,04dH,04dH
+	DB	04dh,04dh,04dh,04dh,04dH,04dH,04dH,04dH
+	DB	003h,003h,003h,003h,003H,003H,003H,003H
+	DB	003h,003h,003h,003h,003H,003H,003H,003H
+	DB	04dh,04dh,04dh,04dh,04dH,04dH,04dH,04dH
+	DB	04dh,04dh,04dh,04dh,04dH,04dH,04dH,04dH
+	;kleuren FRANC tijdens lopen en springen+32 pixels verschoven
+FRCOLDATA5: DB	08dh,08dh,08dh,08dh,08dH,08dH,08dH,08dH
+	DB	08dh,08dh,08dh,08dh,08dH,08bH,08bH,08bH
+	DB	0c3h,0c3h,0c3h,0c3h,0c3H,0c3H,0c3H,0c3H
+	DB	0c3h,0c3h,0c3h,0c3h,0c7H,0c7H,0c7H,0c7H
+	DB	08bh,08bh,08bh,08bh,08bH,08dH,08dH,08dH
+	DB	081h,081h,081h,081h,083H,083H,083H,083H
+	DB	0c7h,0c7h,0c7h,0c7h,0c7H,0c7H,0c7H,0ceH
+	DB	0ceh,0ceh,0ceh,0ceh,0ceH,0ceH,0ceH,0ceH
+
+
+	;KLEUREN VAN HET DIENBLAD
+
+	;dienblad heel zonder deksel
+TRCOLDATA1: DB	00DH,00DH,00DH,00DH,003H,003H,003H,003H
+	DB	007H,007H,007H,007H,007H,00DH,00DH,00DH
+	DB	04EH,04EH,04EH,04EH,04EH,04EH,04EH,04EH
+	DB	04BH,04BH,04BH,04BH,04BH,04BH,043H,043H
+	;dienblad inclusief deksel
+TRCOLDATA2: DB	00BH,00BH,00BH,00BH,00BH,00BH,00BH,00BH
+	DB	00BH,00BH,00BH,00BH,00BH,00BH,00BH,00BH
+	DB	047H,047H,047H,047H,047H,047H,047H,047H
+	DB	047H,047H,047H,047H,047H,04DH,04DH,04DH
+	;dienblad tijdens bukken
+TRCOLDATA3: DB	00DH,00DH,00DH,00DH,00DH,00DH,00DH,00DH
+	DB	00DH,007H,007H,007H,007H,00DH,00DH,00DH
+	DB	043H,043H,043H,04EH,04EH,047H,047H,04BH
+	DB	04BH,04BH,04BH,04BH,04BH,04BH,04BH,04BH
+	;dienblad tijdens bukken met deksel
+TRCOLDATA4: DB	00DH,00DH,007H,007H,007H,007H,007H,007H
+	DB	007H,007H,007H,007H,007H,00DH,00DH,00DH
+	DB	043H,043H,04BH,04BH,04BH,04BH,04BH,04BH
+	DB	04BH,04BH,04BH,04BH,04BH,04BH,04BH,04BH
+	;dienblad tijdens vallen
+TRCOLDATA5: DB	00BH,00BH,00BH,00BH,00BH,00BH,00BH,00BH
+	DB	00BH,00BH,00DH,00DH,00DH,003H,003H,003H
+	DB	047H,047H,047H,047H,047H,047H,047H,047H
+	DB	047H,047H,04EH,04EH,04EH,04EH,04EH,04EH
+	;dienblad tijdens valllen met deksel
+TRCOLDATA6: DB	00BH,00BH,00BH,00BH,00BH,00BH,00BH,00BH
+	DB	00BH,00BH,00BH,00BH,00BH,00BH,00BH,00BH
+	DB	047H,047H,047H,047H,047H,047H,047H,047H
+	DB	047H,047H,047H,047H,047H,047H,047H,047H
+	;dienblad stuk
+TRCOLDATA7: DB	00BH,00BH,00BH,00BH,00BH,00BH,00BH,00BH
+	DB	00BH,003H,003H,00DH,00BH,00BH,00BH,00BH
+	DB	047H,047H,047H,047H,047H,047H,047H,047H
+	DB	04EH,04EH,04EH,04EH,047H,047H,047H,047H
+
+LASTADR:	LD	HL,(VOETADRES)
+	LD	A,L
+	SRL	A
+	SRL	A
+	SRL	A
+	SRL	A
+	OR	240
+	AND	H
+	CP	06FH
+	RET	NZ
+	JP	LOOPTOE	;FRANC is onderin veld
+
+	;regelt bewegen rotsblok
+COPYROTS:	LD	A,(ROTSSTAT)
+	OR	A
+	JP	Z,LASTADR
+	CP	1
+	JR	Z,COPYROTS8
+	CP	3
+	JR	Z,COPYROTS2
+	LD	A,(SPRITEATR+104)
+	ADD	A,4
+	LD	(SPRITEATR+104),A
+	LD	(SPRITEATR+108),A
+	LD	HL,ROTSTEL
+	INC	(HL)
+	LD	A,(HL)
+	AND	3
+	RET	NZ
+	LD	A,(SPRITEATR+104)
+	CP	192
+	JR	C,COPYROTS5
+	LD	DE,16
+	LD	HL,(ROTSDESTI)
+COPYROTS6:	ADD	HL,DE
+	LD	A,(HL)
+	AND	11100000B
+	CP	128
+	JR	Z,COPYROTS7
+	LD	(ROTSDESTI),HL
+	JR	COPYROTS6
+	RET
+COPYROTS8:	LD	A,3
+	LD	(ROTSSTAT),A
+	LD	HL,PSGEFF15
+	JP	0001BH
+COPYROTS2:	LD	HL,(ROTSSOURC)
+	LD	A,(HL)
+	CP	153
+	JR	NZ,COPYROTS3
+	;oude rots verwijderen
+	LD	A,L
+	AND	1
+	BIT	4,L
+	JR	Z,COPYROTS2B
+	ADD	A,2
+COPYROTS2B: LD	(HL),A
+	JP	BLOKONSCR
+	;blokje scrollen
+COPYROTS3:	LD	A,(ROTSOPTEL)
+	LD	B,A
+	LD	A,(SPRITEATR+105)
+	ADD	A,B
+	LD	(SPRITEATR+105),A
+	LD	(SPRITEATR+109),A
+	AND	15
+	RET	NZ
+COPYROTS5:	LD	HL,(ROTSDESTI)
+	LD	DE,16
+	ADD	HL,DE
+	LD	A,(HL)
+	AND	11100000B
+	CP	128
+	JR	NZ,COPYROTS4
+COPYROTS7:	LD	HL,(ROTSDESTI)
+	PUSH	HL
+	LD	(HL),153
+	LD	BC,(ROTSSTAT)
+	XOR	A
+	LD	(ROTSSTAT),A
+	LD	A,219
+	LD	(SPRITEATR+104),A
+	LD	(SPRITEATR+108),A
+	PUSH	BC
+	CALL	BLOKONSCR
+	POP	BC
+	POP	HL
+	LD	A,(DRAAGDIEN)
+	CP	4
+	RET	NZ
+	LD	DE,(DIENADRES)
+	OR	A
+	SBC	HL,DE
+	RET	NZ
+	LD	A,(HEBDEKSEL)
+	OR	A
+	JP	Z,SETSTUK
+	LD	A,C
+	CP	2
+	JR	Z,COPYROTS4B
+	DEC	DE
+	LD	A,(DE)
+	CP	128
+	JR	NC,COPYROTS4C
+	LD	(DIENADRES),DE
+	LD	A,(SPRITEATR+5)
+	SUB	16
+	LD	(SPRITEATR+5),A
+	LD	(SPRITEATR+9),A
+	RET
+COPYROTS4C: INC	DE
+	INC	DE
+	LD	(DIENADRES),DE
+	LD	A,(SPRITEATR+5)
+	ADD	A,16
+	LD	(SPRITEATR+5),A
+	LD	(SPRITEATR+9),A
+	RET
+COPYROTS4B: LD	HL,-16
+	ADD	HL,DE
+	LD	(DIENADRES),HL
+	RET
+COPYROTS4:	LD	(ROTSDESTI),HL
+	LD	A,2
+	LD	(ROTSSTAT),A
+	RET
+
+COPYBROS:	LD	A,(REGBROST)
+	OR	A
+	RET	NZ
+	DEC	A
+	LD	(REGBROST),A
+	LD	HL,PSGEFF20
+	CALL	0001BH
+	LD	HL,(REGBROSAD)
+	PUSH	HL
+	LD	DE,16
+	ADD	HL,DE
+	LD	A,(HL)
+	AND	11111100B
+	CP	4
+	CALL	Z,COPYBROSV
+	CP	68
+	CALL	Z,COPYBROSV
+	CALL	BLOKONSCR
+	POP	HL
+	CALL	ADRTOGET
+	LD	(HL),A
+	JP	BLOKONSCR
+COPYBROSV:	PUSH	AF
+	LD	A,(HL)
+	SUB	4
+	LD	(HL),A
+	POP	AF
+	RET
+
+COPYFRANC:	LD	A,(FRANCKNIP)
+	OR	A
+	JR	Z,COPYFRANCX
+	DEC	A
+	LD	(FRANCKNIP),A
+	AND	7
+	CP	7
+	JP	Z,FRANCBLACK
+COPYFRANCY: AND	4
+	JP	NZ,COPYBEEST
+COPYFRANCX: LD	A,(FRANCNR2)
+	LD	B,A
+	LD	A,(FRANCNR)
+	CP	B
+	JR	Z,COPYBEEST
+	LD	(FRANCNR2),A
+	LD	(STFRANCOMM+2),A
+	LD	HL,STFRANCOMM
+	JP	IVDPCOMM
+FRANCBLACK: XOR	A
+	LD	(FRANCNR2),A
+	LD	HL,BLACKCOMM
+	JP	IVDPCOMM
+COPYBEESTT: DB	0
+COPYBEEST:	LD	HL,COPYBEESTT
+	INC	(HL)
+	BIT	0,(HL)
+	JR	Z,COPYBEEST2
+	LD	IY,VIJTABEL
+	LD	B,0
+	CALL	COPYBEEST3
+	LD	IY,VIJTABEL+10
+	LD	B,128
+	CALL	COPYBEEST3
+	LD	IY,VIJTABEL+20
+	LD	B,1
+	JP	COPYBEEST3
+COPYBEEST2: LD	IY,VIJTABEL+30
+	LD	B,129
+	CALL	COPYBEEST3
+	LD	IY,VIJTABEL+40
+	LD	B,2
+	CALL	COPYBEEST3
+	LD	HL,STLIFTTEL
+	INC	(HL)
+	LD	A,(HL)
+	AND	3
+	RET	NZ
+	INC	HL
+	INC	(HL)
+	LD	A,(HL)
+	AND	3
+	ADD	A,216
+	LD	(STVIJCOMM+2),A
+	XOR	A
+	LD	(STVIJCOMM),A
+	LD	A,128
+	LD	(STVIJCOMM+4),A
+	LD	A,255
+	LD	(STVIJCOMM+6),A
+	LD	HL,STVIJCOMM
+	JP	IVDPCOMM
+STLIFTTEL:	DB	0
+STLIFTST:	DB	0
+COPYBEEST3: LD	A,(IY+8)
+	CP	(IY+9)
+	RET	Z
+	LD	(IY+9),A
+	PUSH	AF
+	AND	127
+	ADD	A,212
+	LD	(STVIJCOMM+2),A
+	POP	AF
+	AND	128
+	LD	(STVIJCOMM),A
+	LD	A,B
+	AND	127
+	ADD	A,253
+	LD	(STVIJCOMM+6),A
+	LD	A,B
+	AND	128
+	LD	(STVIJCOMM+4),A
+	LD	HL,STVIJCOMM
+	JP	IVDPCOMM
+
+STVIJCOMM:	DW	0            ;Van (X)
+	DB	0,1          ;Van (Y)
+	DW	0            ;Naar (X)
+	DB	252,1        ;Naar (Y)
+	DW	128          ;Aantal horizontaal
+	DW	1            ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11010000B    ;Commando/Logop
+
+BLACKCOMM:	DW	0            ;Van (X)
+	DB	0,0          ;Van (Y)
+	DW	0            ;Naar (X)
+	DB	252,1        ;Naar (Y)
+	DW	256          ;Aantal horizontaal
+	DW	1            ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11000000B    ;Commando/Logop
+
+STFRANCOMM: DW	0            ;Van (X)
+	DB	0,1          ;Van (Y)
+	DW	0            ;Naar (X)
+	DB	252,1        ;Naar (Y)
+	DW	256          ;Aantal horizontaal
+	DW	1            ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11010000B    ;Commando/Logop
+
+	;Items over achtergrond kopieren
+ITEMCOMM1:	DW	0            ;Van (X)
+	DB	0,1          ;Van (Y)
+	DW	0            ;Naar (X)
+	DB	80,1         ;Naar (Y)
+	DW	64           ;Aantal horizontaal
+	DW	16           ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11010000B    ;Commando/Logop
+
+ITEMCOMM2:	DW	0            ;Van (X)
+	DB	160,1        ;Van (Y)
+	DW	0            ;Naar (X)
+	DB	0,1          ;Naar (Y)
+	DW	16           ;Aantal horizontaal
+	DW	16           ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	10011000B    ;Commando/Logop
+
+COPYITEM:	DI
+	XOR	A
+	LD	(ITEMCOMM2),A
+	LD	HL,00050H
+	LD	B,8
+COPYITEM2:	PUSH	BC
+	PUSH	HL
+	LD	A,H
+	LD	(ITEMCOMM1+4),A
+	LD	A,L
+	LD	(ITEMCOMM1+6),A
+	LD	HL,ITEMCOMM1
+	CALL	VDPCOMM
+	POP	HL
+	LD	B,4
+COPYITEM3:	PUSH	BC
+	PUSH	HL
+	LD	A,H
+	LD	(ITEMCOMM2+4),A
+	LD	A,L
+	LD	(ITEMCOMM2+6),A
+	DI
+	LD	HL,ITEMCOMM2
+	CALL	VDPCOMM
+	POP	HL
+	LD	A,H
+	ADD	A,16
+	LD	H,A
+	JR	NZ,COPYITEM4
+	LD	A,L
+	ADD	A,16
+	LD	L,A
+COPYITEM4:	POP	BC
+	DJNZ	COPYITEM3
+	LD	A,(ITEMCOMM2)
+	ADD	A,16
+	LD	(ITEMCOMM2),A
+	POP	BC
+	DJNZ	COPYITEM2
+	RET
+
+POWERDECW:	DB	0
+POWERDECV:	LD	A,(VERGIF)
+	OR	A
+	RET	Z
+	LD	HL,POWERDECW
+	INC	(HL)
+	LD	A,(HL)
+	AND	63
+	RET	NZ
+	LD	B,1
+	;afnemen van power. B=aantal blokjes
+POWERDEC:	LD	A,(CHEATADR)
+	OR	A
+	RET	NZ
+	LD	A,(POWERG)
+	SUB	B
+	JR	NC,POWERDEC2
+	XOR	A
+POWERDEC2:	LD	(POWERG),A
+	RET
+
+	;power toenemen. B=aantal blokjes
+POWERINC:	LD	A,(POWERG)
+	ADD	A,B
+	CP	34
+	JR	C,POWERDEC2
+	LD	A,33
+	JR	POWERDEC2
+
+	;toenemen van spuug. B=aantal
+SPUUGINC:	LD	A,(SPUUGG)
+	ADD	A,B
+	CP	24
+	JR	C,SPUUGINCB
+	LD	A,23
+SPUUGINCB:	LD	(SPUUGG),A
+	LD	HL,PSGEFF11
+	JP	0001BH
+
+	;zet achtergrond-blokje neer (invoer:HL=adres)
+SETACHTER:	CALL	ADRTOGET
+	LD	(HL),A
+	JP	BLOKONSCR
+
+ADRTOGET:	LD	A,L
+	AND	1
+	BIT	4,L
+	RET	Z
+	OR	2
+	RET
+
+	;voet copy-opdrachten uit t.b.v. de knager
+VOORRANG:	LD	A,(VOORRFLG)
+	LD	HL,(VOORRADR)
+	LD	DE,16
+	ADD	HL,DE
+	CP	2
+	JR	Z,VOORRANGC
+	CP	1
+	JR	NZ,VOORRANGE
+VOORRANGB:	LD	A,(HL)
+	CP	128
+	JR	NZ,VOORRANGE
+	LD	(HL),132
+	CALL	BLOKONSCR
+	LD	HL,PSGEFF9
+	CALL	0001BH
+VOORRANGE:	XOR	A
+	LD	(VOORRFLG),A
+	RET
+VOORRANGC:	CALL	ADRTOGET
+	LD	(HL),A
+	PUSH	HL
+	LD	HL,PSGEFF26
+	CALL	0001BH
+	POP	HL
+	CALL	BLOKTOSCR
+	LD	DE,16
+	ADD	HL,DE
+	LD	A,(HL)
+	AND	11111100B
+	CP	4
+	JR	Z,VOORRANGF
+	CP	68
+	JR	Z,VOORRANGF
+	CP	128
+	JR	C,VOORRANGE
+	CP	144
+	JR	NC,VOORRANGE
+	LD	A,(HL)
+	AND	11111101B
+	LD	(HL),A
+	CALL	BLOKONSCR
+	JR	VOORRANGE
+VOORRANGF:	LD	A,(HL)
+	SUB	4
+	LD	(HL),A
+	CALL	BLOKONSCR
+	JR	VOORRANGE
+
+SPUGENON:	XOR	A
+	LD	(REGKRACHT),A
+	RET
+
+SPUGENOFF:	LD	A,0C9H
+	LD	(REGKRACHT),A
+	RET

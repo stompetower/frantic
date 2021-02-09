@@ -1,0 +1,63 @@
+# Frantic Graphics (`.GRP` files)
+
+To run the game, only these `.GRP` files are needed. These will be copied by the make script in this repository.
+
+This information (and in subdirectories) will be helpful if:
+- you want to understand the (graphics handling) code
+- you want to build the `.GRP` files from modified content
+
+## How to build these `.GRP` files
+
+The `.GRP` files in this directory are the final graphics binaries.
+
+If you want to change the graphics, you need to build these files from their source graphics.
+This is not supported by the make script of this repository, but it can be done by using a real MSX (or emulator).
+
+First, unzip [this download](https://www.msx.org/downloads/anmas-frantic-sources) which includes Frantic source graphics.
+Locate the file `Frantic - Graphics1.dsk` and use it with a real MSX (or emulator).
+
+There are five `.BAS` files that are used to build the `.GRP` files, summarized in the table below:
+
+binary to build | use this `.BAS` file | comment
+-------- | ---- | -------
+`FRANTIC1.GRP` | `CRINTRO1.BAS` | intro and story (+ intro sprites)
+`FRANTIC2.GRP` | `CRINTRO2.BAS` | intro and story
+`FRANTIC3.GRP` | `CRSTANDG.BAS` | general game graphics (+ sprites)
+`FRANTIC4.GRP` | `CRSTAGES.BAS` | Job 1
+`FRANTIC5.GRP` | `CRSTAGES.BAS` | Job 2 (change number in line 11)
+`FRANTIC6.GRP` | `CRSTAGES.BAS` | Job 3 (change number in line 11)
+`FRANTIC7.GRP` | `CRSTAGES.BAS` | Job 4 (change number in line 11)
+`FRANTIC8.GRP` | `CRSTAGES.BAS` | Job 5 (change number in line 11)
+`FRANTIC9.GRP` | `CRSTAGES.BAS` | Job 6 (change number in line 11)
+`FRANTICA.GRP` | `CREINDE.BAS` | ending
+
+Each `CR??????.BAS` file loads the source graphics, and then starts to crunch (=compress) the graphics to a more compact format. This crunching process can take a while.
+
+For example, the `CRINTRO1.BAS` looks like this:
+```
+10 SCREEN 5
+20 SET PAGE 0,0:BLOAD"page1b.SC5",S
+30 SET PAGE 1,1:BLOAD"page2b.SC5",S
+60 '
+100 SL=0:         ' starting line.
+110 AL=512:       ' number of lines.
+120 N$="INTRO1  ":' filename
+130 '
+... (some lines omitted)
+230 BLOAD"CRUNCH.COM",R
+```
+
+In this case, the input file with the source graphics is `INTRO1.SC5`, and the output file with the converted/crunched graphics is `INTRO1.CRN`.
+
+Finally, you should rename the converted/crunched file to the name used in the game, in this case `FRANTIC1.GRP`.
+
+
+
+
+
+
+
+
+
+
+

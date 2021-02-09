@@ -1,0 +1,1052 @@
+	DB	0FEH
+	DW	START,EINDE,START
+
+	ORG	0CA00H
+
+;Initialisaties-----------------------------------------------
+
+WORLDNR:	EQU	0FC83H
+WORLDNRSUB: EQU	07061H
+
+START:
+	DI
+	LD	HL,08010H	;64 kB memory mapper testen
+	LD	DE,TESTMMAPD
+	LD	BC,00400H
+TESTMMAPB:
+	LD	A,C
+	OUT	(0FEH),A
+	LD	A,(HL)
+	LD	(DE),A
+	LD	(HL),C
+	INC	C
+	INC	DE
+	DJNZ	TESTMMAPB
+	LD	BC,00400H
+TESTMMAPC:
+	LD	A,C
+	OUT	(0FEH),A
+	LD	A,(HL)
+	CP	C
+	JR	NZ,TESTMMAPE
+	INC	C
+	DJNZ	TESTMMAPC
+	JR	TESTMMAPF
+TESTMMAPE:
+	LD	A,1
+	LD	(HARDWARE),A
+TESTMMAPF:
+	LD	DE,TESTMMAPD
+	LD	BC,00400H
+TESTMMAPG:
+	LD	A,C
+	OUT	(0FEH),A
+	LD	A,(DE)
+	LD	(HL),A
+	INC	DE
+	INC	C
+	DJNZ	TESTMMAPG
+	LD	A,1
+	OUT	(0FEH),A
+	LD	A,(HARDWARE)
+	OR	A
+	JR	Z,START2
+	RET
+
+TESTMMAPD:	DB	0,0,0,0
+HARDWARE:	DB	0
+
+START2:
+	LD	(STACKBUF),SP
+	CALL	SETNEWHOOK
+	XOR	A
+	LD	(0FC82H),A
+	LD	(0FC84H),A
+	LD	(0FC85H),A
+	CALL	FMCHIP	;FM chip aanwezig?
+	LD	A,(SLOTNR)
+	CALL	C,SETFM	;Zoja, initialiseer deze
+
+	XOR	A	;Geen geluidseffect
+	LD	(0F3ACH),A
+	LD	(0F3DBH),A	;Geen toetsklik
+	INC	A
+	LD	(0FCABH),A	;Geen lock bewegen
+
+	CALL	ISNOSH
+	CALL	BEVEIL
+
+	LD	HL,FILENAME1	;laad replayroutine
+	LD	DE,0
+	LD	C,3
+	CALL	LOADFILE
+
+;Hoofdlus-----------------------------------------------------
+
+	DI
+	LD	IX,VDPREGS	;aantal VDP's instellen
+	CALL	WRITEVDPS
+	CALL	GROOTBEELD	;scherm 212 pixels hoog
+
+	LD	HL,CLRSCRCOMM	;pagina 0 wissen
+	CALL	VDPCOMMAND
+	CALL	CHECKVDP	;wachten tot VDP klaar is
+
+STARTAGAIN:
+	LD	HL,FILENAME3	;laad graphics van intro.
+	LD	DE,00000H
+	LD	C,2
+	CALL	LOADFILE
+
+	DI
+	CALL	RAMPAGE1	;RAM op page 1
+
+	CALL	MEMORYNOR
+
+	CALL	TURBOMODE
+
+	LD	HL,04005H	;uncrunch graphics van intro
+	LD	DE,256
+	LD	BC,512
+	CALL	UNCRUN
+
+	CALL	Z80MODE
+
+	LD	HL,FILENAME4	;laad graphics van intro.
+	LD	DE,00000H
+	LD	C,2
+	CALL	LOADFILE
+
+	DI
+	CALL	MEMORYNOR
+
+	CALL	TURBOMODE
+
+	LD	HL,04005H	;uncrunch graphics van intro
+	LD	DE,768
+	LD	BC,212
+	CALL	UNCRUN
+
+	CALL	Z80MODE
+
+	LD	HL,FILENAME5	;laad muziek
+	LD	DE,01800H
+	LD	C,3
+	CALL	LOADFILE
+
+	LD	HL,FILENAME6
+	LD	DE,00100H
+	LD	C,1
+	CALL	LOADFILE
+
+	CALL	MEMORYNOR
+
+	CALL	ROMPAGE1	;ROM op page 1
+
+	CALL	DRIVEOFF
+
+	CALL	08100H	;Roep intro aan.
+
+
+	;Inladen voor spel benodigde files--------------------------
+
+	;graphics
+
+	LD	HL,FILENAME7	;laad graphics van game
+	LD	DE,01800H
+	LD	C,3
+	CALL	LOADFILE
+	CALL	RAMPAGE1	;RAM op page 1
+	DI
+	CALL	MEMORYUP
+	CALL	TURBOMODE
+	LD	HL,05805H	;uncrunch graphics van game
+	LD	DE,256+112
+	LD	BC,195
+	CALL	UNCRUN
+	CALL	Z80MODE
+
+NEXTWORLD:
+	CALL	RAMPAGE1
+	LD	A,(WORLDNR)
+	ADD	A,51
+	LD	(FILENAME8+8),A
+	LD	HL,FILENAME8	;laad graphics van game
+	LD	DE,01800H
+	LD	C,3
+	CALL	LOADFILE
+	DI
+	CALL	MEMORYUP
+	CALL	TURBOMODE
+	LD	HL,05805H	;uncrunch graphics van game
+	LD	DE,256
+	LD	BC,80
+	CALL	UNCRUN
+	CALL	Z80MODE
+
+	;muziek
+	;resident
+	LD	HL,FILENAME2	;Laad muziek die resident in gegeugen zit.
+	LD	DE,00000H	;Begint bij 1D800, eindigt bij 1E0B3h
+	LD	C,2	;lengte is 2227 bytes
+	CALL	LOADFILE
+	CALL	RAMPAGE1
+	CALL	MEMORYNOR
+	LD	HL,0D000H	;VRAM adres
+	LD	DE,04000H	;RAM adres
+	LD	BC,12000	;lengte
+	CALL	RAMTOVRM
+
+	;speelmuziek
+	LD	DE,(WORLDNR)
+	DEC	E
+	SLA	E
+	LD	D,0
+	LD	HL,MUSICNRS
+	ADD	HL,DE
+	LD	A,(HL)
+	PUSH	HL
+	LD	(FILENAMEC+8),A
+	LD	HL,FILENAMEC
+	LD	DE,00000H
+	LD	C,2
+	CALL	LOADFILE
+	CALL	MEMORYNOR
+	LD	HL,08000H	;VRAM adres
+	LD	DE,04000H	;RAM adres
+	LD	BC,02800H	;lengte
+	CALL	RAMTOVRM
+	POP	HL
+	INC	HL
+	LD	A,(HL)
+	LD	(FILENAMEC+8),A
+	LD	HL,FILENAMEC
+	LD	DE,0
+	LD	C,2
+	CALL	LOADFILE
+	CALL	MEMORYNOR
+	LD	HL,0A800H	;VRAM adres
+	LD	DE,04000H	;RAM adres
+	LD	BC,02800H	;lengte
+	CALL	RAMTOVRM
+
+	;world-data
+
+	LD	A,(WORLDNR)
+	ADD	A,48
+	LD	(FILENAME9+8),A
+	LD	HL,FILENAME9
+	LD	DE,03FF9H
+	LD	C,3
+	CALL	LOADFILE
+	CALL	MEMORYNOR
+	LD	HL,04000H
+	LD	DE,04000H
+	LD	BC,04000H
+	CALL	RAMTOVRM
+
+	LD	BC,(WORLDNRSUB)
+	LD	A,(WORLDNR)
+	CP	C
+	JP	NZ,HANG
+
+	;coding game.
+
+	LD	HL,FILENAMEA
+	LD	DE,00100H
+	LD	C,1
+	CALL	LOADFILE
+
+	CALL	ROMPAGE1
+	CALL	MEMORYNOR
+	CALL	DRIVEOFF
+
+	CALL	08100H
+
+	OR	A	;A=0 als opnieuw moet beginnen
+	JP	Z,STARTAGAIN
+
+	LD	HL,WORLDNR
+	INC	(HL)
+	LD	A,(HL)
+	CP	7
+	JP	C,NEXTWORLD
+
+	;Laden van het einde---------------------------------------------
+
+	CALL	RAMPAGE1
+	;graphics
+	LD	HL,FILENAMED	;laad graphics van game
+	LD	DE,01800H
+	LD	C,3
+	CALL	LOADFILE
+	CALL	RAMPAGE1	;RAM op page 1
+	DI
+	CALL	MEMORYUP
+	CALL	TURBOMODE
+	LD	HL,05805H	;uncrunch graphics van game
+	LD	DE,256
+	LD	BC,468
+	CALL	UNCRUN
+	CALL	Z80MODE
+	;muziek
+	LD	HL,FILENAMEB
+	LD	DE,01800H
+	LD	C,3
+	CALL	LOADFILE
+	;coding
+	LD	HL,FILENAMEE
+	LD	DE,00100H
+	LD	C,1
+	CALL	LOADFILE
+	;start het einde
+	CALL	MEMORYNOR
+	CALL	ROMPAGE1	;ROM op page 1
+	CALL	DRIVEOFF
+	CALL	08100H	;Roep intro aan.
+	JP	STARTAGAIN
+
+;Subroutines------------------------------------------------
+
+HANG:
+	DI
+	LD	A,076H
+	LD	(HANG2),A
+	JP	HANG3
+
+STACKBUF:	DW	0
+
+BEVEIL:
+	LD	HL,08EA0H
+	LD	DE,00005H
+	LD	B,H
+	LD	H,L
+	LD	C,D
+	LD	D,E
+	LD	L,C
+	LD	E,B
+	; LD	HL,0A000H
+	; LD	DE,0058EH
+	JP	BEVEIL2
+
+DRIVEOFF:
+	XOR	A
+	LD	(0F1C1H),A
+	LD	IX,04029H
+	LD	IY,(0F347H)
+	CALL	0001CH
+	XOR	A
+	LD	(0F1C1H),A
+	RET
+
+WRITEVDPS:
+	LD	C,(IX+0)	    ;Schrijft serie VDP's
+	BIT	7,C	    ;Invoer :
+	RET	NZ	    ;	  IX=startadr. van tabel
+	LD	B,(IX+1)	    ;	  (IX+0)+2K = register
+	CALL	IWRTVDP	    ;	  (IX+1)+2K = data
+	INC	IX
+	INC	IX
+	JR	WRITEVDPS
+
+VDPREGS:
+	DB	1 ,00100010B
+	DB	0 ,00000110B
+	DB	8 ,00001000B
+	DB	7 ,0
+	DB	23,0
+	DB	2,31
+	DB	5,239
+	DB	11,1
+	DB	6,31
+	DB	19,0
+	DB	18,0
+	DB	25,4
+	DB	26,0
+	DB	27,0
+	DB	255
+
+KLEINBEELD:
+	LD	B,0
+	JR	SETBEELD
+GROOTBEELD:
+	LD	B,128
+SETBEELD:
+	DI
+	LD	HL,0FFE8H
+	LD	A,(HL)
+	AND	2
+	OR	B
+	LD	B,A
+	LD	C,9
+	JP	WRTVDP
+
+BEVEIL2:
+	LD	BC,(BEVEIL3)
+	PUSH	HL
+	PUSH	DE
+	LD	HL,00100H
+	LD	DE,00022H
+	ADD	HL,DE
+	ADD	HL,DE
+	PUSH	HL
+	POP	IX
+	POP	DE
+	POP	HL
+	PUSH	IX
+	PUSH	HL
+	PUSH	DE
+	PUSH	BC
+	XOR	A
+	CALL	BEVEIL4
+	POP	BC
+	POP	DE
+	POP	HL
+	POP	IX
+	NOP				; JP C,HANG replaced by 3x NOP
+	NOP
+	NOP
+	INC	E
+	XOR	A
+	CALL	BEVEIL4
+	NOP				; JP NC,HANG replaced by 3x NOP
+	NOP
+	NOP
+	RET
+
+CLRSCRCOMM:
+	DW	0            ;Van (X)
+	DB	0,0          ;Van (Y)
+	DW	0            ;Naar (X)
+	DB	0,0          ;Naar (Y)
+	DW	256          ;Aantal horizontaal
+	DW	256          ;Aantal verticaal
+	DB	000H         ;Kleur
+	DB	0            ;Manier van copieren
+	DB	11000000B    ;Commando/Logop
+
+VDPCOMMAND:
+	LD	A,32	    ;Stuurt 15-bytes data naar de
+	OUT	(099H),A	    ;command-registers van de VDP.
+	LD	A,145               ;Invoer : HL=startadres van tabel data.
+	OUT	(099H),A
+	CALL	CHECKVDP
+	LD	BC,00F9BH
+	OTIR
+	RET
+
+CHECKVDP:
+	LD	A,2	    ;Kijkt of VDP klaar is, zoja, wacht
+	OUT	(099H),A	    ;Invoer : -
+	LD	A,143
+	OUT	(099H),A
+CHECKVDPB:
+	IN	A,(099H)
+	BIT	0,A
+	JR	NZ,CHECKVDPB
+	XOR	A
+	OUT	(099H),A
+	LD	A,143
+	OUT	(099H),A
+	RET
+
+WRTVDP:
+	LD	A,B
+	OUT	(099H),A
+	LD	A,C
+	OR	128
+	OUT	(099H),A
+	RET
+
+IWRTVDP:	LD	A,B
+	DI
+	OUT	(099H),A
+	LD	A,C
+	OR	128
+	EI
+	OUT	(099H),A
+	RET
+
+	;LOADFILE: HL=adres waar filename staat
+	;	    DE=adres waar data moet komen (startadres)
+	;	       van min. 0000h tot max. 3fffh
+	;	    C =eerste memmory-map waar data komt.
+	;	       map wordt automatisch verlaagd als data niet in
+	;	       1 map past
+
+LOADFCB:
+	DB	0,"           "
+	DS	25
+FILELENGTH:
+	DW	0
+
+LOADFILE:
+	LD	A,(NOSHFLAG)
+	OR	A
+	CALL	NZ,0D600H
+	LD	(LOADSTACK),SP
+	LD	(LOADBUFHL),HL
+	LD	(LOADBUFDE),DE
+	LD	(LOADBUFBC),BC
+	PUSH	BC
+	PUSH	DE
+	LD	DE,LOADFCB
+	LD	BC,12
+	LDIR
+	LD	DE,LOADFCB
+	LD	C,00FH
+	CALL	0F37DH
+	OR	A
+	JP	NZ,DISKERROR
+	LD	HL,1
+	LD	(LOADFCB+14),HL
+	LD	HL,0
+	LD	(LOADFCB+33),HL
+	LD	(LOADFCB+35),HL
+	POP	DE
+	PUSH	DE
+	LD	HL,08000H
+	ADD	HL,DE
+	EX	DE,HL
+	LD	C,01AH
+	CALL	0F37DH
+	POP	DE
+	POP	BC
+	LD	HL,(LOADFCB+16)
+	LD	(FILELENGTH),HL
+LOADFILEC:
+	LD	HL,04000H
+	OR	A
+	SBC	HL,DE
+	EX	DE,HL
+	PUSH	BC
+	LD	A,C
+	DI
+	OUT	(0FEH),A
+	LD	(0F2C9H),A
+	EI
+	LD	HL,(FILELENGTH)
+	LD	A,H
+	CP	D
+	JR	C,LOADFILEB
+	JR	NZ,LOADFILED
+	LD	A,L
+	CP	E
+	JR	C,LOADFILEB
+	JR	Z,LOADFILEB
+LOADFILED:
+	EX	DE,HL
+LOADFILEB:
+	PUSH	HL
+	LD	DE,LOADFCB
+	LD	C,027H
+	CALL	0F37DH
+	OR	A
+	JP	NZ,DISKERROR
+	POP	DE
+	POP	BC
+	DEC	C
+	LD	HL,(FILELENGTH)
+	OR	A
+	SBC	HL,DE
+	LD	A,H
+	OR	L
+	JP	Z,LOADEND
+	LD	A,H
+	CP	0FBH
+	JP	NC,LOADEND
+	LD	(FILELENGTH),HL
+	PUSH	BC
+	LD	DE,08000H
+	LD	C,01AH
+	CALL	0F37DH
+	LD	DE,0
+	POP	BC
+	JR	LOADFILEC
+LOADSTACK:	DW	0
+LOADBUFHL:	DW	0
+LOADBUFDE:	DW	0
+LOADBUFBC:	DW	0
+
+LOADEND:
+	LD	A,(NOSHFLAG)
+	OR	A
+	CALL	NZ,0D603H
+	RET
+
+DISKERROR:
+	LD	SP,(LOADSTACK)
+	CALL	ERRMELDING
+	CALL	RAMPAGE1
+	LD	A,(0F343H)
+	LD	H,080H
+	CALL	00024H
+DISKERRORB:
+	LD	A,8
+	CALL	00141H
+	BIT	0,A
+	JR	NZ,DISKERRORB
+	LD	HL,(LOADBUFHL)
+	LD	DE,(LOADBUFDE)
+	LD	BC,(LOADBUFBC)
+	JP	LOADFILE
+
+SETNEWHOOK:
+	LD	HL,0FEFDH
+	LD	DE,HOOKBUF
+	LD	BC,5
+	PUSH	HL
+	PUSH	BC
+	LDIR
+	POP	BC
+	POP	DE
+	LD	HL,HOOKNEW
+	LDIR
+	RET
+
+SETOLDHOOK:
+	LD	HL,HOOKBUF
+	LD	DE,0FEFDH
+	LD	BC,5
+	LDIR
+	RET
+
+HOOKNEW:
+	JP	DISKERROR
+	DB	0,0
+HOOKBUF:
+	DS	5
+
+HANG3:
+	LD	A,2
+HANG2:
+	RET
+
+UNCRUN:	; DE=VRAM START LINE
+		; HL=START DATA IN RAM
+	LD	IY,UNCRUNIY+2	; BC=AANTAL LIJNEN
+	EX	DE,HL
+	CALL	UNCRUNLTOA
+	EX	DE,HL
+UNCRUNLOP:
+	PUSH	BC
+	PUSH	DE
+	PUSH	HL
+	POP	IX
+	LD	A,(HL)
+	SRL	A
+	SRL	A
+	SRL	A
+	SRL	A
+	LD	(UNCRUNTEL3+1),A
+	OR	A
+	LD	A,10
+	JR	Z,UNCRUND
+	XOR	A
+UNCRUND:
+	LD	(UNCRUNJP2+1),A
+	LD	A,(HL)
+	AND	15
+	LD	(UNCRUNDAT+1),A
+	LD	DE,3
+	LD	B,D
+	DEC	A
+	JR	Z,UNCRUNC
+	LD	E,5
+	DEC	A
+	JR	Z,UNCRUNC
+	LD	E,9
+	DEC	A
+	JR	Z,UNCRUNC
+	LD	E,1
+	LD	B,6
+UNCRUNC:
+	ADD	HL,DE
+	LD	A,B
+	LD	(UNCRUNJP1+1),A
+	LD	(UNCRUNOM),A
+	INC	IX
+	LD	BC,00008H
+	LD	A,(HL)
+	LD	(UNCRUNACT),A
+UNCRUNE:
+	PUSH	BC
+UNCRUNDAT:
+	LD	B,1
+	LD	A,(UNCRUNACT)
+	LD	D,000H
+UNCRUNDAT2:
+	SLA	A
+	RL	D
+	DEC	C
+	CALL	Z,UNCRUNGET
+	DJNZ	UNCRUNDAT2
+UNCRUNJP1:
+	JR	UNCRUNTEL3
+	LD	(IY+0),D
+UNCRUNIY:
+	LD	D,(IX+0)
+UNCRUNTEL3:
+	LD	B,1
+	LD	E,000H
+UNCRUNJP2:
+	JR	UNCRUNTEL
+UNCRUNTEL2:
+	SLA	A
+	RL	E
+	DEC	C
+	CALL	Z,UNCRUNGET
+	DJNZ	UNCRUNTEL2
+UNCRUNTEL:
+	LD	(UNCRUNACT),A
+	INC	E
+	LD	A,C
+	POP	BC
+	LD	C,A
+	LD	A,D
+	EX	AF,AF'
+	LD	A,(UNCRUNOM)
+	LD	D,A
+	EX	AF,AF'
+	PUSH	HL
+	LD	HL,UNCRUNWER
+UNCRUNF:
+	LD	I,A
+	RLD
+	BIT	0,D
+	JR	Z,UNCRUNG
+	LD	A,(HL)
+	OUT	(098H),A
+UNCRUNG:
+	INC	D
+	LD	A,I
+	DEC	E
+	JR	Z,UNCRUNH
+	DJNZ	UNCRUNF
+
+UNCRUNH:
+	POP	HL
+	LD	A,D
+	LD	(UNCRUNOM),A
+	DJNZ	UNCRUNE
+UNCRUNK:
+	BIT	3,C
+	JR	NZ,UNCRUNI
+	INC	HL
+UNCRUNI:
+	POP	DE
+	INC	DE
+	POP	BC
+	DEC	BC
+	LD	A,C
+	AND	15
+	CALL	Z,UNCRUNJ
+	LD	A,B
+	OR	C
+	JP	NZ,UNCRUNLOP
+	LD	BC,0000EH
+	JP	00047H
+UNCRUNJ:
+	EX	DE,HL
+	CALL	UNCRUNLTOA
+	EX	DE,HL
+	RET
+UNCRUNGET:
+	INC	HL
+	LD	A,(HL)
+	LD	C,8
+	RET
+UNCRUNACT:	DB	0
+UNCRUNOM:	DB	0
+UNCRUNWER:	DB	0
+UNCRUNLTOA:
+	PUSH	HL
+	LD	A,B
+	LD	B,7
+UNCRUNLTOB:
+	ADD	HL,HL
+	DJNZ	UNCRUNLTOB
+	LD	B,A
+	CALL	UNCRUNWRTA
+	POP	HL
+	RET
+UNCRUNWRTA:
+	LD	A,H	    ;Stelt het VRAM-adres in
+	RL	A	    ;Invoer : HL=adres
+	RL	A	    ;	  c=1 voor bovenste 64kb
+	RL	A
+	AND	7
+	DI
+	OUT	(099H),A
+	LD	A,142
+	OUT	(099H),A
+	LD	A,L
+	OUT	(099H),A
+	LD	A,H
+	AND	03FH
+	OR	040H
+	OUT	(099H),A
+	RET
+
+BEVEIL3:	DW	001F9H
+
+Z80MODE:
+	LD	A,(0002DH)
+	CP	3
+	RET	C
+	LD	A,128
+	JP	00180H
+
+TURBOMODE:
+	LD	A,(0002DH)
+	CP	3
+	RET	C
+	LD	A,130
+	JP	00180H
+
+SLTINI:
+	LD	A,(0FCC1H)	    ;Stelt eerste slot in
+	AND	128	    ;(voor zoekroutines)
+	LD	(SLOTNR),A	    ;In/uitvoer: -
+	RET
+SLOTNR:	DB	0,0
+
+NEXSLT:
+	LD	HL,SLOTNR	    ;Verhoogd slotcode
+	LD	A,(HL)	    ;Invoer: -
+	AND	128	    ;Uitvoer: (SLOTNR) is nieuwe slot
+	JR	Z,NEXTSLTB	    ;	  c=1 als laatste slot
+	LD	A,(HL)	    ;	  al bereikt
+	AND	12
+	CP	12
+	JR	Z,NEXTSLTB
+	LD	A,4
+	ADD	A,(HL)
+	LD	(HL),A
+	OR	A
+	RET
+NEXTSLTB:
+	LD	A,(HL)
+	AND	3
+	CP	3
+	JR	NZ,NEXTSLTC
+	SCF
+	RET
+NEXTSLTC:
+	INC	A
+	LD	C,A
+	LD	B,0
+	LD	HL,0FCC1H
+	ADD	HL,BC
+	LD	A,(HL)
+	AND	128
+	OR	C
+	LD	(SLOTNR),A
+	RET
+
+FMCHIP:
+	CALL	SLTINI	    ;Deze routine zoekt naar de FM-chip
+FMCHIPB:
+	CALL	FMCHIPC	    ;Output: C=1 als aanwezig
+	RET	C	    ;	 (SLOTNR)=slotnr
+	CALL	NEXSLT
+	JR	NC,FMCHIPB
+	OR	A
+	RET
+FMCHIPC:
+	LD	DE,FMCHIPF
+	LD	HL,0401CH
+FMCHIPD:
+	PUSH	DE
+	LD	A,(SLOTNR)
+	CALL	0000CH
+	POP	DE
+	EX	DE,HL
+	CP	(HL)
+	EX	DE,HL
+	JR	NZ,FMCHIPE
+	INC	HL
+	INC	DE
+	LD	A,L
+	CP	020H
+	JR	NZ,FMCHIPD
+	SCF
+	RET
+FMCHIPE:
+	OR	A
+	RET
+FMCHIPF:
+	DB	"OPLL"              ;Deze code staat in FM-ROM.
+
+SETFM:
+	PUSH	AF
+	LD	A,1
+	LD	(0FC82H),A
+	LD	E,A	       ;Deze routine installeerd de FM chip
+	POP	AF
+	LD	HL,07FF6H	       ;Input: A=slotnr
+	CALL	00014H
+	LD	BC,00039H
+SETFMB:
+	CALL	WRITEFM
+	DEC	C
+	JR	NZ,SETFMB
+	LD	HL,SETFMD
+	LD	D,33
+SETFMC:
+	LD	C,(HL)
+	INC	HL
+	LD	B,(HL)
+	INC	HL
+	CALL	WRITEFM
+	DEC	D
+	JR	NZ,SETFMC
+	RET
+SETFMD:
+	DB	14,32, 22,32, 23,80, 24,192, 38,5, 39,5, 40,1
+	DB	54,0, 55,0, 56,0, 48,48, 16,86, 32,0, 49,48, 17,86
+	DB	33,0, 50,48, 18,86, 34,0, 51,48, 19,86, 35,0, 52,48
+	DB	20,86, 36,0, 53,48, 21,86, 37,0, 55,16, 56,1, 56,17
+	DB	55,37, 54,1	    ;Data om FM te initialiseren
+
+WRITEFM:
+	LD	   A,C	       ;Zet een waarde in een register
+	OUT	(07CH),A	       ;Input:C=register
+	EX	(SP),HL	       ;	  B=data
+	EX	(SP),HL
+	LD	A,B
+	OUT	(07DH),A
+	EX	(SP),HL
+	EX	(SP),HL
+	RET
+
+RAMPAGE1:
+	LD	A,(0F342H)	;Stelt RAM in op page 1
+RAMPAGE1B:
+	LD	H,040H
+	JP	00024H
+
+ROMPAGE1:
+	LD	A,(0FCC1H)	;Stelt ROM in op page 1
+	JR	RAMPAGE1B
+
+BEVEIL4:
+	JP	(IX)
+
+MEMORYUP:
+	DI
+	LD	A,3
+	OUT	(0FDH),A
+	LD	(0F2C8H),A
+	DEC	A
+	OUT	(0FEH),A
+	LD	(0F2C9H),A
+	EI
+	RET
+
+MEMORYNOR:
+	DI
+	LD	A,2
+	OUT	(0FDH),A
+	LD	(0F2C8H),A
+	DEC	A
+	OUT	(0FEH),A
+	LD	(0F2C9H),A
+	EI
+	RET
+
+RAMTOVRM:
+	DI		;Kopieert RAM naar VRM
+	SCF		;Invoer: HL=VRAM adres
+	CALL	SETWRVRM	;        DE=RAM adres
+RAMTOVRMB:
+	LD	A,(DE)	;        BC=lengte
+	OUT	(098H),A
+	INC	DE
+	DEC	BC
+	LD	A,B
+	OR	C
+	JR	NZ,RAMTOVRMB
+	RET
+
+SETWRVRM:
+	LD	A,H	    ;Stelt het VRAM-adres in (voor scrijven)
+	RL	A                   ;Invoer : HL=adres
+	RL	A                   ;         c=1 voor bovenste 64kb
+	RL	A
+	AND	7
+	OUT	(099H),A
+	LD	A,142
+	OUT	(099H),A
+	LD	A,L
+	OUT	(099H),A
+	LD	A,H
+	AND	03FH
+	OR	040H
+	OUT	(099H),A
+	RET
+
+ERRMELDING:
+	CALL	ERRMELDB
+	CALL	ERRMELDB
+	JP	000C0H
+ERRMELDB:
+	CALL	000C0H
+	LD	B,12
+ERRMELDD:
+	EI
+	HALT
+	DJNZ	ERRMELDD
+	RET
+
+ISNOSH:
+	LD	HL,0F87FH
+	LD	DE,NOSHTEXT
+	LD	B,4
+ISNOSHB:
+	LD	A,(DE)
+	CP	(HL)
+	RET	NZ
+	INC	HL
+	INC	DE
+	DJNZ	ISNOSHB
+	LD	A,1
+	LD	(NOSHFLAG),A
+	RET
+NOSHTEXT:	DB	"FRAN"
+NOSHFLAG:	DB	0
+
+;Muziekjes per veld------------------------------------------
+
+MUSICNRS:
+	DB	"4","5"         ;JOB 1
+	DB	"6","7"         ;JOB 2
+	DB	"8","9"         ;JOB 3
+	DB	"A","B"         ;JOB 4
+	DB	"C","D"         ;JOB 5
+	DB	"E","E"         ;JOB 6
+;Filenamen---------------------------------------------------
+
+FILENAME1:	DB	0,"FRANTIC REP";replayroutine
+FILENAME2:	DB	0,"FRANTIC1MUS";standaard muziek(gered+continue)
+FILENAME3:	DB	0,"FRANTIC1GRP";graphics intro 1
+FILENAME4:	DB	0,"FRANTIC2GRP";graphics intro 2
+FILENAME5:	DB	0,"FRANTIC2MUS";muziek bij intro
+FILENAME6:	DB	0,"FRANTIC1BIN";coding van intro
+FILENAME7:	DB	0,"FRANTIC3GRP";standaard graphics
+FILENAME8:	DB	0,"FRANTIC4GRP";graphics per stage (4 t/m 9)
+FILENAME9:	DB	0,"FRANTIC1JOB";veldnr. (1 t/m 6)
+FILENAMEA:	DB	0,"FRANTIC2BIN";coding spel
+FILENAMEB:	DB	0,"FRANTIC3MUS";muziek voor het einde van het spel
+FILENAMEC:	DB	0,"FRANTIC4MUS";spelmuziek (van 4 t/m F)
+FILENAMED:	DB	0,"FRANTICAGRP";graphics voor einde van spel
+FILENAMEE:	DB	0,"FRANTIC3BIN";coding van einde spel
+
+EINDE:	NOP
+
+;----------------------------------------------------------------------------
+; Fill with zero's to get binary file size divisible by 128 bytes
+; That's what GEN80 used to do automatically
+; !discard the first 7 bytes of the BLOAD-header
+	
+	DS (128-($%128))*($%128>0)*-1 -7
