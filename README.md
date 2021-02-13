@@ -60,41 +60,41 @@ The final files that make up the game:
 
 Filename | Type | Comment
 -------- | ---- | -------
-FRANTIC.LOD | Z80 logic | loads other files
-FRANTIC1.BIN | Z80 logic | intro and story
-FRANTIC2.BIN | Z80 logic | main game
-FRANTIC3.BIN | Z80 logic | game ending
-FRANTIC.REP | Z80 logic | replayer music/sound effects
-FRANTIC1.JOB | content | Job 1
-FRANTIC2.JOB | content | Job 2
-FRANTIC3.JOB | content | Job 3
-FRANTIC4.JOB | content | Job 4
-FRANTIC5.JOB | content | Job 5
-FRANTIC6.JOB | content | Job 6
-FRANTIC1.GRP | graphics | intro and story (+ intro sprites)
-FRANTIC2.GRP | graphics | intro and story
-FRANTIC3.GRP | graphics | general game graphics (+ sprites)
-FRANTIC4.GRP | graphics | Job 1
-FRANTIC5.GRP | graphics | Job 2
-FRANTIC6.GRP | graphics | Job 3
-FRANTIC7.GRP | graphics | Job 4
-FRANTIC8.GRP | graphics | Job 5
-FRANTIC9.GRP | graphics | Job 6
-FRANTICA.GRP | graphics | ending
-FRANTIC1.MUS | music | talking Cramp, continue, job finished
-FRANTIC2.MUS | music | intro / story
-FRANTIC3.MUS | music | ending
-FRANTIC4.MUS | music | Job 1
-FRANTIC5.MUS | music | Job 1
-FRANTIC6.MUS | music | Job 2
-FRANTIC7.MUS | music | Job 2
-FRANTIC8.MUS | music | Job 3
-FRANTIC9.MUS | music | Job 3
-FRANTICA.MUS | music | Job 4
-FRANTICB.MUS | music | Job 4
-FRANTICC.MUS | music | Job 5
-FRANTICD.MUS | music | Job 5
-FRANTICE.MUS | music | Job 6
+`FRANTIC.LOD` | Z80 logic | loads other files
+`FRANTIC1.BIN` | Z80 logic | intro and story
+`FRANTIC2.BIN` | Z80 logic | main game
+`FRANTIC3.BIN` | Z80 logic | game ending
+`FRANTIC.REP` | Z80 logic | replayer music/sound effects
+`FRANTIC1.JOB` | content | Job 1
+`FRANTIC2.JOB` | content | Job 2
+`FRANTIC3.JOB` | content | Job 3
+`FRANTIC4.JOB` | content | Job 4
+`FRANTIC5.JOB` | content | Job 5
+`FRANTIC6.JOB` | content | Job 6
+`FRANTIC1.GRP` | graphics | intro and story (+ intro sprites)
+`FRANTIC2.GRP` | graphics | intro and story
+`FRANTIC3.GRP` | graphics | general game graphics (+ sprites)
+`FRANTIC4.GRP` | graphics | Job 1
+`FRANTIC5.GRP` | graphics | Job 2
+`FRANTIC6.GRP` | graphics | Job 3
+`FRANTIC7.GRP` | graphics | Job 4
+`FRANTIC8.GRP` | graphics | Job 5
+`FRANTIC9.GRP` | graphics | Job 6
+`FRANTICA.GRP` | graphics | ending
+`FRANTIC1.MUS` | music | talking Cramp, continue, job finished
+`FRANTIC2.MUS` | music | intro / story
+`FRANTIC3.MUS` | music | ending
+`FRANTIC4.MUS` | music | Job 1
+`FRANTIC5.MUS` | music | Job 1
+`FRANTIC6.MUS` | music | Job 2
+`FRANTIC7.MUS` | music | Job 2
+`FRANTIC8.MUS` | music | Job 3
+`FRANTIC9.MUS` | music | Job 3
+`FRANTICA.MUS` | music | Job 4
+`FRANTICB.MUS` | music | Job 4
+`FRANTICC.MUS` | music | Job 5
+`FRANTICD.MUS` | music | Job 5
+`FRANTICE.MUS` | music | Job 6
 
 The game has 6 Jobs (=stages). Each Job has its own graphics and also two songs, except for Job 6 which has one song.
 

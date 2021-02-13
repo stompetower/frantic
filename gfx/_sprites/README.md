@@ -1,9 +1,11 @@
 # Sprites
 
-The original sprite designs are in the `designs` subdirectory.
-To see the final sprite patterns, see the `final_patterns` subdirectory.
+The original sprite designs are in the `_designs` subdirectory.
+To see the final sprite patterns, see the `_final_patterns` subdirectory.
+To see where the sprites are stored within the graphics, see the `_gfx/_vram_pages_in_png` directory.
+
 The tools to convert the sprite designs to the right format for MSX (sprite pattern table, sprite color table), may be lost.
-To see where the sprites are stored within the graphics, see the `gfx/vram_pages_in_png` directory.
+
 
 
 ## Sprite colors
@@ -28,12 +30,13 @@ color1 | color2 | color1 OR color2 | comment
 3 | 13 | 15 | brown, pink, black
 5 | 10 | 15 | light green, green, black
 7 | 11 | 15 | grey, white, black
-6 | 9 | 16 | dark yellow, yellow, black
+6 | 9 | 15 | dark yellow, yellow, black
 3 | 9 | 11 | brown, yellow, white
 6 | 11 | 15 | dark yellow, white, black
 3 | 14 | 15 | brown, dark blue, black
 
-See `palettes.png` where the color palette for each stage/job is shown.
+See `palettes.png` where the color palette for each stage/job is shown. There you can see that only the colors 2, 4, 8 and 12 vary per job/stage of the game.
+None of these colors (that will change with each job) are used in sprite graphics.
 
 These (more simple) sprites do not use the 3-color feature:
 - skewers
@@ -44,7 +47,7 @@ These (more simple) sprites do not use the 3-color feature:
 ## Sprite Attribute Table during game play
 
 Sprite attributes (Y, X, pattern, color) are kept in RAM and copied to VRAM every interrupt.
-See code-file `SUBS.GEN`, label `SPRITEATR` (32 x 4 bytes of data are defined here). 
+See code-file `subs.asm`, label `SPRITEATR` (32 x 4 bytes of data are defined here). 
 
 The maximum of 32 sprites are used as follows:
 
