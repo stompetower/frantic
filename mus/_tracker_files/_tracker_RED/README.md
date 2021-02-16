@@ -58,7 +58,7 @@ Requirements to run RED:
 - The track `IN` is used to set the OPLL custom instrument (=instrument '0' for tracks `F1` - `F9`).
   - The OPLL FM-chip supports only 1 custom instrument; instruments 1 - 15 are fixed instruments.
   - There are 193 custom instruments (in hex: `01` - `C1`), mainly extracted from the FM-PAC ROM.
-
+  - Each instrument is defined by 8 bytes (see `User Tone Registers` of the OPLL chip).
 
 ## Keyboard Controls
 
@@ -109,9 +109,9 @@ Some example keyboard shortcuts:
 
 First decide which tracks must be visible:
 - Use `[CTRL]+[LEFT]` or `[CTRL]+[RIGHT]` to quickly change the visible tracks.
-- Use `[F8]` to select 3 specific tracks (`TracksOnScreen` feature).
+- Or use `[F8]` to select 3 specific tracks (`TracksOnScreen` feature).
 
-Position the red cursor where a note should be added:
+Position the red cursor where a note should be entered:
 - See the help view named `'EDIT KEYS1'` for some keyboard shortcuts for editing.
 - Optionally, use `[F9]` (`EditJump` feature) to skip extra rows after new input.
 
@@ -120,15 +120,18 @@ If you have the Philips music keyboard NMS-1160 connected:
 - Use `[CTRL]+[F2]` (`FirstOctaveOnKeyboard` feature) to change which octaves are used.
 
 If you do not have the Philips music keyboard:
-- Enter the letter of the note (`A` - `G`)
-- Optionally enter the sharp sign (`#`)
-- Enter the octave number (`1` - `8`)
+- Enter the letter of the note (`A` - `G`).
+- Optionally enter the sharp sign (`#`).
+- Enter the octave number (`1` - `8`).
 
 
-For example, the result might be `C#4--03`
+For example, the result might be `C#4--03` :
 - The `03` is the effect (`03` does nothing more than playing the note)
 - The `--` means that there is no extra data needed for this effect.
-- Use `[HOME]` to enter the last added note again.
+
+You can use `[HOME]` to enter the last added note again.
+
+For editing, some defaults can be set:
 - Use `[F5]` to set the default effect per track during editing
 - Use `[F4]` to set the default instrument per track during editing
 - Use `[F3]` to set the default volume per track during editing
@@ -140,7 +143,7 @@ See below for more info about effects.
 
 ## Song level settings
 - Use `[CTRL]+[CAPS]+[F8]` to set the name of the song.
-- Use `[CAPS]+[F8]` to set the composer
+- Use `[CAPS]+[F8]` to set the composer.
 - Use `[TAB]` to set the speed at which the song should be played.
   - Speed `003` is a common speed setting, while speed `000` is the most fast speed.
   - Use effect `30` to change the speed during (midway) a song.
