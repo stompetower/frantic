@@ -13,7 +13,7 @@ Bring your tray with the drink to Earl Cramp's guests. Just like you, Earl Cramp
 
 - Walk and jump your way through Earl Cramp's building.
 - You naturally move downward through the building.
-- There are hovering platforms that bring you up&#8596;down or left&#8596;right.
+- There are hovering platforms that bring you up&#11012;down or left&#11012;right.
 
 
 ### How to survive
@@ -41,7 +41,7 @@ Bring your tray with the drink to Earl Cramp's guests. Just like you, Earl Cramp
 - Elevator shafts are at the very left and right side of the screen.
 - A door at the elevator shaft brings you to another door at the same side.
 - You normally should find out yourselves which doors are connected.
-- But on the [extracted maps](/stompetower/frantic/tree/main/_extra/_jobs_as_png_maps) you can see which doors are connected:
+- But on the [extracted maps](../../../tree/main/_extra/_jobs_as_png_maps) you can see which doors are connected:
   - Door `0` is connected to door `1`, door `2` to `3`, `4` to `5`, `6` to `7`, `8` to `9`, `A` to `B`, `C` to `D`, `E` to `F`.
   - The two connected doors are always on the same side!
 
