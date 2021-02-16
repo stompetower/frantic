@@ -9,7 +9,7 @@ Because only comments and assembler directives (like `DB`) have changed, the res
 You can see the game in action on [this YouTube longplay](https://www.youtube.com/playlist?list=PLHp4wuWd8InM9cQMos87vhI9aHSGlkAhy). If you have build the game, you might need [this cheats](https://www.cheatmsx.com/en/cheats/461/anma-1992-frantic.html), because the game not easy to play.
 You also might want to read [how to play](./_extra/how_to_play.md) this game.
 
-[screenshot](./_extra/_screenshots/job_3_b.png)
+![screenshot](./_extra/_screenshots/job_3_b.png)
 
 ## Usage
 
