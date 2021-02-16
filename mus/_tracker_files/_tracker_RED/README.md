@@ -15,20 +15,20 @@ Requirements to run RED:
 - MSX-2 or higher (real or emulator) with at least 256 kB RAM.
 - MSX-MUSIC (not needed for music that only uses PSG channels)
 
+![Starting RED](screenshot1.png)
+
 
 ## Starting up RED
 
 
 - Hold `[CTRL]` down during startup of the computer, with the RED disk inside the floppy drive. 
-- Press `[1]` for RED v1 or press `[2]` for RED v2 (v1 and v2 differ in effects and custom instruments).
+- Press `[1]` for RED v1 or press `[2]` for RED v2 (v1 and v2 differ only in some effects and custom instruments).
 - press `[ENTER]` when RED has been started with a dark-blue background.
 - Choose `'6 FM voices + drums'` and also the interrupt frequency (50 or 60 Hz).
 - You can also choose the `'9 FM voices'` mode, but this mode is rarely used.
 - An empty composition is now being initialized.
 - Any time you see a red colored border, it means the tracker is busy processing.
 - After startup, the RED disk is not needed anymore (the complete software remains in memory).
-
-![Starting RED](screenshot1.png)
 
 
 ## Music files
@@ -39,7 +39,7 @@ Requirements to run RED:
 - Thus a `.MUS` file of a ANMA product is in fact a renamed `.CON` file.
 - `.AMU` files that were made with RED v1 should also later be loaded/edited with the same RED v1.
 - `.AMU` files that were made with RED v2 should also later be loaded/edited with the same RED v2.
-- There are little differences between RED v1 and v2 (effects and custom instruments).
+- There are little differences between RED v1 and v2 (only some effects and custom instruments).
 - Made with RED v1: music for No Fuss, Nosh, The Source of Power demo, Anti-rip demo.
 - Made with RED v2: music for Frantic, TROXX, RELAX demo, No Fuss promo 2
 - Made with another tracker: Squeek demo 1 and 2, DYNANMA demo
@@ -113,13 +113,13 @@ First decide which tracks must be visible:
 
 Position the red cursor where a note should be entered:
 - See the help view named `'EDIT KEYS1'` for some keyboard shortcuts for editing.
-- Optionally, use `[F9]` (`EditJump` feature) to skip extra rows after new input.
+- Optionally, use `[F9]` (`EditJump` feature) to skip extra rows after each input.
 
 If you have the Philips music keyboard NMS-1160 connected:
 - Just push the key on the music keyboard. The note will appear at the cursor's position.
 - Use `[CTRL]+[F2]` (`FirstOctaveOnKeyboard` feature) to change which octaves are used.
 
-If you do not have the Philips music keyboard:
+If you do **not** have the Philips music keyboard:
 - Enter the letter of the note (`A` - `G`).
 - Optionally enter the sharp sign (`#`).
 - Enter the octave number (`1` - `8`).
@@ -132,9 +132,9 @@ For example, the result might be `C#4--03` :
 You can use `[HOME]` to enter the last added note again.
 
 For editing, some defaults can be set:
-- Use `[F5]` to set the default effect per track during editing
-- Use `[F4]` to set the default instrument per track during editing
 - Use `[F3]` to set the default volume per track during editing
+- Use `[F4]` to set the default instrument per track during editing
+- Use `[F5]` to set the default effect per track during editing
 
 See below for more info about effects.
 
@@ -165,7 +165,7 @@ See below for more info about effects.
   - Tom
   - Hi hat
   - Cymbal
-- A drum that will play has its volume set between 1 and 15 (`0` - `F` in hex notation)
+- A drum that will play has its volume set between 1 and 15 (`1` - `F` in hex notation)
 - A `-` means that the specific drum will not play on that specific row.
 - A few examples:
   - `FE---` means: base drum on volume 15, snare drum on volume 14.

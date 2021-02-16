@@ -3273,7 +3273,7 @@ EINDE:
 ;   PSGSNDEFF1:   DB  254,7,184,8,14, 255,1,4,0,1,1,1, 250,15,240,0,15,0,15
 ;                 DB  253, 248,1,65, 253, 248,1,0BFH, 249, 252, 254,8,0, 251
 ;----------------------------------------------------------------------------
-; This is how you should read this sound effect data:
+; The following byte values (in any sound effect data) have a special meaning:
 ;       255 = start outer loop (255,from,to,up/down,step,register,from)
 ;       254 = set register (254,register,data,..,..)
 ;       253 = wait interrupt
@@ -3283,18 +3283,18 @@ EINDE:
 ;       249 = the 'next' of inner loop
 ;       248 = add/subtract from register (248,register,amount XOR 64)
 ;----------------------------------------------------------------------------
-; Analysis of example sound effect above:
-;   - Set register 7 to 184, and also register 8 to 14
-;   - Start outer loop from 1 to 4 with (+1 each iteration) on register 1
-;       - Start inner loop from 15 to 250 (+15 each iteration) on register 0
-;           - Wait 1 interrupt
-;           - Add (65 XOR 64 = 1) to register 1
-;           - Wait 1 interrupt
-;           - Add (0BFH XOR 64 = -1) to register 1       
-;       - Next iteration of inner loop
-;   - Next iteration of outer loop
-;   - Set register 8 to 0
-;   - End of sound effect
+; Analysis of example sound effect (PSGSNDEFF1) above:
+;   - [254] Set register 7 to 184, and also register 8 to 14
+;   - [255] Start outer loop from 1 to 4 with (+1 each iteration) on register 1
+;       - [250] Start inner loop from 15 to 250 (+15 each iteration) on register 0
+;           - [253] Wait 1 interrupt
+;           - [248] Add (65 XOR 64 = 1) to register 1
+;           - [253] Wait 1 interrupt
+;           - [248] Add (0BFH XOR 64 = -1) to register 1       
+;       - [249] Next iteration of inner loop
+;   - [252] Next iteration of outer loop
+;   - [254] Set register 8 to 0
+;   - [251] End of sound effect
 ;============================================================================
 
 
