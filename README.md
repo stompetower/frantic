@@ -1,19 +1,21 @@
 # Frantic (MSX-2 game, made in 1992)
 
-The Z80 (8-bit microprocessor) source code is provided here, as it was written in 1992 by André Ligthart from the MSX group [ANMA](https://www.msx.org/wiki/ANMA), with only the following changes:
+The Z80 (8-bit microprocessor) source code is provided here, as it was written in 1992 by André Ligthart from the MSX group [ANMA](https://www.msx.org/wiki/ANMA), with only the following modifications:
 * the source code is now compatible with the [Z80 Glass cross-assembler](http://www.grauw.nl/projects/glass/) (written in Java). 
 * `replayer.asm` (music/sound effect replayer) has been commented extensively.
 
 Because only comments and assembler directives (like `DB`) have changed, the resulting binaries are identical to the original binaries (exception: a 1 byte change due to a tiny bug, and unused padding at the end of some binaries).
 
 You can see the game in action on [this YouTube longplay](https://www.youtube.com/playlist?list=PLHp4wuWd8InM9cQMos87vhI9aHSGlkAhy). If you have build the game, you might need [this cheats](https://www.cheatmsx.com/en/cheats/461/anma-1992-frantic.html), because the game not easy to play.
+You also might want to read [how to play](./_extra/how_to_play.md) this game.
 
+[screenshot](./_extra/_screenshots/job_3_b.png)
 
 ## Usage
 
-Just run `make.bat` on a Windows based machine and see the files being generated in the `dsk` directory. 
-
 As a prerequisite, you need the [Java Runtime Environment](https://www.java.com/download/) and the [Z80 Glass Assembler](http://www.grauw.nl/projects/glass/) which is just a portable `.jar` (Java ARchive) file.
+
+Just run `make.bat` on a Windows based machine and see the files being generated in the `dsk` directory. You might need to correct the paths to `jave.exe` and `glass-0.5.jar` in the `make.bat` file.
 
 ## Running the game
 
@@ -108,6 +110,9 @@ Thom Zwagers did most of the work for this repository, like reverse-engineering 
 
 ## History
 
-This game was originally developed in 1992 on a real MSX-2 ([Sony HB-F700P](https://www.msx.org/wiki/Sony_HB-F700P)). The assembler used was GEN80.COM (version 2.04, HiSoft 1987). The text editor used was TED (version 2.6 by M.J. Vriend). The graphics editor used was Halos (from Sony). The music tracker used was [ANMA's RED](https://www.msx.org/news/software/en/anmas-red-music-recordereditor-available-for-download), which can be [downloaded here](https://www.msx.org/downloads/anmas-red-music-recordereditor-incuding-music-etc).
-
+This game was originally developed in 1992 on a real MSX-2 ([Sony HB-F700P](https://www.msx.org/wiki/Sony_HB-F700P)). The assembler used was GEN80.COM (version 2.04, HiSoft 1987).
+The text editor used was TED (version 2.6 by M.J. Vriend). The graphics editor used was Halos (from Sony).
+The music tracker used was [ANMA's RED](https://www.msx.org/news/software/en/anmas-red-music-recordereditor-available-for-download),
+which can be [downloaded here](https://www.msx.org/downloads/anmas-red-music-recordereditor-incuding-music-etc).
+See more about history in the `_extra` directory.
 
