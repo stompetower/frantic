@@ -132,10 +132,14 @@ dec | hex | PSG track | FM track | Description
 62 | `3E` | n.a. | n.a. | (unused, do nothing)
 63 | `3F` | n.a. | n.a. | (unused, do nothing)
 
+#### Special FM effect
+dec | hex | PSG track | FM track | Description
+--- | --- | ----------- | ---------- | -----------
+64 | `40` | n.a. | `---VY40` | change volume / instrument `Y` without 'starting' new note
+
 #### Special PSG effects (mostly drums)
 dec | hex | PSG track | FM track | Description
 --- | --- | ----------- | ---------- | -----------
-64 | `40` | n.a. | `---XY40` | 
 64 | `40` | `---VY40` | n.a. | PSG drum with noise pitch Y (PSG1 only!) - bring volume down very quick
 65 | `41` | `---VY41` | n.a. | PSG drum with noise pitch Y (PSG1 only!) - ...less quick
 66 | `42` | `---VY42` | n.a. | PSG drum with noise pitch Y (PSG1 only!) - ...not very quick
