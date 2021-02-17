@@ -204,7 +204,7 @@ See below for more info about effects.
 
 
 - ANMA's RED has many effects, like pitch slides, vibrations, PSG drums, arpeggio effects and many more.
-- [This download](https://www.msx.org/downloads/anmas-red-music-recordereditor-incuding-music-etc) provides a list of all effects (in Dutch).
+- [This list of all effects](RED_EFFECTS.md) describe all possible effects within RED.
 - The effects are implemented by the [replayer code](https://github.com/stompetower/frantic/blob/main/src/replayer.asm). For example, start looking at the labels `PSGEFFECTS` and `FMPEFFECTS`.
 - Effect `00` does nothing and means 'no input'. This is shown as `-----00`.
 - A dash sign (`-`) means that there is no data needed on that position.
@@ -219,12 +219,12 @@ Some examples:
 - `---F-48` : effect 48, play an imitated PSG base drums with volume 15 (=`F`).
 - `----406` : effect 06, decrease volume after each 4 interrupts (volume fade down).
 
-So there is always the same pattern like `NNNddEE` :
+So there is always the same pattern like `NNNXYEE` :
 - Where `EE` is the effect number in hex notation.
 - Where `NNN` is the note to be played if applicable for the effect (eg.: `C#4`).
-- Where `dd` represents extra data in hex notation (eg.: `F8`).
-  - the first `d` often represents the volume, but it can be any data.
-  - the second `d` often represents the instrument, but it can be any data.
+- Where `XY` represents extra data in hex notation (eg.: `F8`).
+  - the `X` often represents the volume, but it can be any data.
+  - the `Y` can be any data, like the instrument or a counter.
 
 The effects `01` and `02` do not follow the pattern above:
 - `OFF1-01` : effect 01, turn off the note that is now playing.
