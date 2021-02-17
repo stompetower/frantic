@@ -22,11 +22,11 @@ FRANTICB.AMU | FRANTICB.CON | FRANTICC.MUS
 FRANTICC.AMU | FRANTICC.CON | FRANTICD.MUS
 FRINTRO.AMU | FRINTRO.CON | FRANTIC2.MUS
 FREINDE.AMU | FREINDE.CON | FRANTIC3.MUS
-FRCONT.AMU | FRCONT.CON | FRANTIC1.MUS (*)
-FRGERED.AMU | FRGERED.CON | FRANTIC1.MUS (*)
-FRTALK.AMU | FRTALK.CON | FRANTIC1.MUS (*)
+FRCONT.AMU | FRCONT.CON | FRANTIC1.MUS [*]
+FRGERED.AMU | FRGERED.CON | FRANTIC1.MUS [*]
+FRTALK.AMU | FRTALK.CON | FRANTIC1.MUS [*]
 
-The last 3 songs are small music files that are binary concatenated. For example, this can be done in
+[*] The last 3 songs are small music files that are binary concatenated. For example, this can be done in
 MSX DOS (or in Windows Command Prompt) in the following way:
 
 ```
@@ -46,6 +46,12 @@ Finally, the workflow is as follows:
 - Modify / create / edit music using the tracker RED.
 - Convert `.AMU` file to `.CON` file using the converter-tool.
 - Rename `.CON` (=CONverted) to `.MUS` (used in game products).
-- This `.MUS` music binaries are loaded by the loader and played by the replayer.
+- This `.MUS` music binaries are loaded by the loader (`loader.asm`) and played by the replayer (`replayer.asm`).
 
-See the sub-directory `_tracker_RED` for a short manual of the music tracker RED.
+## More info
+
+See the sub-directory `_tracker_RED` for more info about the tracker RED like:
+- a short manual.
+- a complete list of all effects.
+- all custom instruments.
+
