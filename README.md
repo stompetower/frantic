@@ -47,6 +47,7 @@ Just change any `.asm` file in the [`src`](../../tree/main/src) directory and ru
 ### Modify Job content
 
 See more info in the [`jobs`](../../tree/main/jobs) directory.
+Also look in this directory in case you want to create a modern job / stage editor for Frantic.
 
 ### Modify music
 
@@ -110,16 +111,16 @@ Which license???
 
 ## History
 
-This game was originally developed in 1992 on a real MSX-2 ([Sony HB-F700P](https://www.msx.org/wiki/Sony_HB-F700P)). The assembler used was GEN80.COM (version 2.04, HiSoft 1987).
+This game was originally developed in 1992 on a real MSX-2 (mainly the [Sony HB-F700P](https://www.msx.org/wiki/Sony_HB-F700P)). The assembler used was GEN80.COM (version 2.04, HiSoft 1987).
 The text editor used was TED (version 2.6 by M.J. Vriend). The graphics editor used was Halos (from Sony).
 The music tracker used was [ANMA's RED](https://www.msx.org/news/software/en/anmas-red-music-recordereditor-available-for-download),
 which can be [downloaded here](https://www.msx.org/downloads/anmas-red-music-recordereditor-incuding-music-etc).
-See more about history in the `_extra` directory.
+See more about history in the [`_extra`](../../tree/main/_extra) directory.
 
 
-## Also info you might not expect
+## Also info you might not expect...
 
-Besides the source code, this repository also includes information you might not expect:
+Besides the source code (and the necessary game binaries), this repository includes much more you might not expect:
 
 - All jobs / stages extracted as [`.png` images](../../tree/main/_extra/_jobs_as_png_maps).
 - The [map_maker](../../tree/main/_extra/_jobs_as_png_maps/_map_maker) (C# code) that created these images.

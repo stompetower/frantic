@@ -5,7 +5,7 @@ The following table shows the relationship between the source code files and the
 
 Source code file | Resulting binary file | What's in it
 -------- | ---- | ------
-**loader.gen** | FRANTIC.LOD | Loading files, uncrunch graphics, copy protection (*)
+**loader.gen** | FRANTIC.LOD | Loading files, uncrunch graphics, copy protection [*]
  | | |
 **replayer.gen** | FRANTIC.REP | replayer for music and sound effects
  | | |
@@ -23,9 +23,8 @@ Source code file | Resulting binary file | What's in it
 
 Non-Italic and Bold file names are the main source code files (the others are includes).
 
-(*) copy protection (floppy bad sector check) is removed.
+[*] copy protection (floppy bad sector check) is removed.
 
- 
 
 # Some info about the source code
 
@@ -38,6 +37,7 @@ Below a little extra info about the source code.
 - in `game.asm`, label `EINDGOED` (and beyond): some game variables
 - in `subs.asm`, label `FRANFIADR` (and beyond): some game variables
 - in `subs.asm`, label `SPRITEATR`: sprite attribute table that is copied to VRAM every interrupt
+- in `subs.asm`, label `COPYFRANC`: Franc sprite pattern is copied to sprite pattern table (each animation step).
 - in `vij.asm`, label `VIJTABEL`: table with active enemies during game play
 - in `vij.asm`, label `PERVIJAND`: sprite-colors per enemy type
 - in `loader.asm`, label `BEVEIL`: check copy protection (bad sector); hang system if no bad sector.
@@ -66,7 +66,6 @@ LETTERCOMM: DEFW 0            ;From (X)
             DEFB 11010000B    ;Command/Logop
             ;(these 15 bytes are sent to VDP registers 32 to 46)
 ```
-
 
 
 ## Naming of labels in source code
@@ -101,6 +100,8 @@ Label / part of label (Dutch) | Meaning (English)
 `LOOP`/`LOPEN` | walk
 `PRAAT` | talk/talking
 `CRAMP` | Earl Cramp, the hostage taker
+
+
 
 
 

@@ -75,14 +75,14 @@ dec | hex | PSG track | FM track | Description
 #### pitch/frequency waving effects
 dec | hex | PSG track | FM track | Description
 --- | --- | ----------- | ---------- | -----------
-36 | `24` | `NNNVY24` | `NNNVY24` | play note, slide down 1 during x interrupts, then up, repeat (also set volume)
-37 | `25` | `---VY25` | `---VY25` | slide down 1 during x interrupts, then up, repeat (also set volume)
-38 | `26` | `NNNVY26` | `NNNVY26` | play note, slide down 2 during x interrupts, then up, repeat (also set volume)
-39 | `27` | `---VY27` | `---VY27` | slide down 2 during x interrupts, then up, repeat (also set volume)
-40 | `28` | `NNNVY28` | `NNNVY28` | play note, slide down 4 during x interrupts, then up, repeat (also set volume)
-41 | `29` | `---VY29` | `---VY29` | slide down 4 during x interrupts, then up, repeat (also set volume)
-42 | `2A` | `NNNVY2A` | `NNNVY2A` | play note, slide down 1 every 1 in 2 interrupts for x times, then up, repeat (also set volume)
-43 | `2B` | `---VY2B` | `---VY2B` | slide down 1 every 1 in 2 interrupts for x times, then up, repeat (also set volume)
+36 | `24` | `NNNVY24` | `NNNVY24` | play note, slide down 1 during Y interrupts, then up, repeat (also set volume)
+37 | `25` | `---VY25` | `---VY25` | slide down 1 during Y interrupts, then up, repeat (also set volume)
+38 | `26` | `NNNVY26` | `NNNVY26` | play note, slide down 2 during Y interrupts, then up, repeat (also set volume)
+39 | `27` | `---VY27` | `---VY27` | slide down 2 during Y interrupts, then up, repeat (also set volume)
+40 | `28` | `NNNVY28` | `NNNVY28` | play note, slide down 4 during Y interrupts, then up, repeat (also set volume)
+41 | `29` | `---VY29` | `---VY29` | slide down 4 during Y interrupts, then up, repeat (also set volume)
+42 | `2A` | `NNNVY2A` | `NNNVY2A` | play note, slide down 1 every 1 in 2 interrupts for Y times, then up, repeat (also set volume)
+43 | `2B` | `---VY2B` | `---VY2B` | slide down 1 every 1 in 2 interrupts for Y times, then up, repeat (also set volume)
 
 #### Arpeggio effects (fast alternating real note pitches)
 dec | hex | PSG track | FM track | Description
@@ -100,12 +100,12 @@ dec | hex | PSG track | FM track | Description
 #### Volume waving effects
 dec | hex | PSG track | FM track | Description
 --- | --- | ----------- | ---------- | -----------
-49 | `31` | `NNNVY31` | n.a. | play note, decrease volume with 1 for x interrupts, then increase, repeat
-50 | `32` | `---VY32` | n.a. | decrease volume with 1 for x interrupts, then increase, repeat
-51 | `33` | `NNNVY33` | n.a. | play note, decrease volume with 1 every 1 in 2 interrupts (x times), then increase, repeat
-52 | `34` | `---VY34` | n.a. | decrease volume with 1 every 1 in 2 interrupts (x times), then increase, repeat
-53 | `35` | `NNNVY35` | n.a. | play note, decrease volume with 1 every 1 in 4 interrupts (x times), then increase, repeat
-54 | `36` | `---VY36` | n.a. | decrease volume with 1 every 1 in 4 interrupts (x times), then increase, repeat
+49 | `31` | `NNNVY31` | n.a. | play note, decrease volume with 1 for Y interrupts, then increase, repeat
+50 | `32` | `---VY32` | n.a. | decrease volume with 1 for Y interrupts, then increase, repeat
+51 | `33` | `NNNVY33` | n.a. | play note, decrease volume with 1 every 1 in 2 interrupts (Y times), then increase, repeat
+52 | `34` | `---VY34` | n.a. | decrease volume with 1 every 1 in 2 interrupts (Y times), then increase, repeat
+53 | `35` | `NNNVY35` | n.a. | play note, decrease volume with 1 every 1 in 4 interrupts (Y times), then increase, repeat
+54 | `36` | `---VY36` | n.a. | decrease volume with 1 every 1 in 4 interrupts (Y times), then increase, repeat
 
 #### Volume increase effects
 dec | hex | PSG track | FM track | Description
@@ -154,7 +154,7 @@ dec | hex | PSG track | FM track | Description
 75 | `4B` | `---VY4B` | n.a. | PSG drum with noise pitch Y (PSG1 only!) - noise (short) with high pitch
 76 | `4C` | `NNNVY4C` | n.a. | PSG drum with noise pitch Y (PSG1 only!) - kind of snare drum (noise and pitch can be set, e.g. use note C4, Y=4)
 77 | `4D` | `-----4D` | n.a. | PSG noise-drum (PSG1 only!) - another snare drum
-78 | `4E` | `NNNVY4E` | n.a. | play note, decrease volume by 1 for x interrupts, keep playing note at lower volume
+78 | `4E` | `NNNVY4E` | n.a. | play note, decrease volume by 1 for Y interrupts, keep playing note at lower volume
 79 | `4F` | `---VY4F` | n.a. | PSG drum with noise pitch Y (PSG1 only!) - slide noise freq. down
 80 | `50` | `---VY50` | n.a. | PSG drum with noise pitch Y (PSG1 only!) - slide noise freq. up
 81 | `51` | `-----51` | n.a. | PSG drum (kind of base drum)
