@@ -40,3 +40,7 @@ FReditor, by ANMA 1992.
 
 ![job editor 2](job_editor_freditor_2.png)
 
+
+Check also the [used hardware](USED_HARDWARE.md) to develop Frantic.
+
+
