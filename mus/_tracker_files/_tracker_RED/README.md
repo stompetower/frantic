@@ -1,7 +1,8 @@
 # Music tracker RED - short manual
 
-
 ANMA's RED is a music tracker that was used to create music for ANMA products for the MSX system.
+You can also read [this news item](https://www.msx.org/news/software/en/anmas-red-music-recordereditor-available-for-download) about RED or [download it here](https://www.msx.org/downloads/anmas-red-music-recordereditor-incuding-music-etc).
+
 Sound chip support:
 - The standard MSX PSG soundchip (AY-3-8910).
 - Yamaha YM2413 (OPLL) FM-chip (= MSX-MUSIC).
@@ -57,9 +58,10 @@ Requirements to run RED:
 - The track `DR` represents the 5 OPLL drums (base / snare / tom / hi hat / cymbal).
 - The track `IN` is used to set the OPLL custom instrument (=instrument '0' for tracks `F1` - `F9`).
   - The OPLL FM-chip supports only 1 custom instrument; instruments 1 - 15 are fixed instruments.
-  - There are 193 custom instruments (in hex: `01` - `C1`), mainly extracted from the FM-PAC ROM.
   - Each instrument is defined by 8 bytes (see `User Tone Registers` of the OPLL chip).
-
+  - RED has 193 custom instruments (in hex: `01` - `C1`), mainly extracted from the FM-PAC ROM.
+  - See list of custom instruments here: [for RED v1](./instruments_RED_v1.txt) and [RED v2](./instruments_RED_v2.txt).
+  
 ## Keyboard Controls
 
 
