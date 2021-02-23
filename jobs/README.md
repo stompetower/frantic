@@ -1,16 +1,13 @@
 # Frantic Job content (`.JOB` files)
 
-
-DISK MANAGER!
-
 Each `.JOB` file is made up of two separate parts, which are simply concatenated:
 - `MAP?.BIN` which contains all background tiles and can be edited with FREditor, a custom made editor.
 - `stage?.asm` which should be assembled and then concatenated to the `MAP?.BIN`
 
-Instead of using FREditor, the tiles can also be edited in text (this is more awkward). Look at the `map?.asm` files in the `_extra` subdirectory.
+Instead of using FREditor, the tiles can also be edited in text (this is more awkward). Look at the `map?.asm` files in the [`extra`](../../../tree/main/jobs/_extra) subdirectory.
 It gives insight in the simple structure of these tile maps.
 
-See the subdirectory `_freditor` for more info about FREditor and how to edit tile maps.
+See the subdirectory [`_freditor`](../../../tree/main/jobs/_freditor) for more info about FREditor and how to edit tile maps.
 The tool itself is in the `_freditor` subdirectory of this repository. It's also available as part of [this download](https://www.msx.org/downloads/anmas-frantic-sources).
 You need a real MSX-2 (or emulator).
 
@@ -85,7 +82,7 @@ Suppose you want to change Job 3, then follow this workflow:
 - Type `[ESC]` followed by `S` to save the changed file. This file does only contain the map of all 16 x 768 tiles.
 - Copy `MAP3.BIN` from the virtual MSX Disk to this directory, for example use a tool like [Disk-Manager](http://www.lexlechz.at/en/software/DiskMgr.html).
 
-![freditor](../../_extra/_history_tools/job_editor_freditor_2.png)
+![freditor](./_freditor/freditor.png)
 Above: FREditor with addresses shown after `[SELECT]` key pressed. For example, the 2 bombs are at `08185H` and `081BBH`.
 
 Now edit `stage3.asm`. Here you can edit:
