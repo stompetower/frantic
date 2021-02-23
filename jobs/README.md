@@ -11,8 +11,8 @@ See the subdirectory [`_freditor`](../../../tree/main/jobs/_freditor) for more i
 The tool itself is in the `_freditor` subdirectory of this repository. It's also available as part of [this download](https://www.msx.org/downloads/anmas-frantic-sources).
 You need a real MSX-2 (or emulator).
 
-To see what content is in the `.JOB` file, look at the `.png` images [here](../../_extra/_jobs_as_png_maps).
-These big maps have been generated from the `.JOB` files by a piece of `C#` code which you can [check here](../../_extra/_jobs_as_png_maps/_map_maker). 
+To see what content is in the `.JOB` file, look at the `.png` images [here](../../../tree/main/_extra/_jobs_as_png_maps).
+These big maps have been generated from the `.JOB` files by a piece of `C#` code which you can [check here](../../../tree/main/_extra/_jobs_as_png_maps/_map_maker). 
 This `FranticMapMaker` can also be of help with analyzing the structure of a `.JOB` file.
 
 In the sections below is more detailed information about the structure of a `.JOB` file.
