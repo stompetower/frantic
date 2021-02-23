@@ -1,9 +1,9 @@
 # FREditor - manual
 
-With FReditor, you can edit the `MAP?.BIN` part of each Frantic `.JOB` file. This `MAP?.BIN`. See the parent directory for more information about the workflow and the structure of a `.JOB` file.
+With FReditor, you can edit the `MAP?.BIN` part of each Frantic `.JOB` file. See the parent directory for more information about the workflow and the structure of a `.JOB` file.
 
 
-The tool is provided in this directory (`FReditor.dsk`) or part of [this download](https://www.msx.org/downloads/anmas-frantic-sources). It is to be used on a real MSX-2 (or emulator).
+The tool is provided in this directory (`freditor.dsk`) or part of [this download](https://www.msx.org/downloads/anmas-frantic-sources). It is to be used on a real MSX-2 (or emulator).
 
 ## FReditor keyboard shortcuts
 

@@ -4,7 +4,7 @@ Each `.JOB` file is made up of two separate parts, which are simply concatenated
 - `MAP?.BIN` which contains all background tiles and can be edited with FREditor, a custom made editor.
 - `stage?.asm` which should be assembled and then concatenated to the `MAP?.BIN`
 
-Instead of using FREditor, the tiles can also be edited in text (this is more awkward). Look at the `map?.asm` files in the [`extra`](../../../tree/main/jobs/_extra) subdirectory.
+Instead of using FREditor, the tiles can also be edited in text (this is more awkward). Look at the `map?.asm` files in the [`_extra`](../../../tree/main/jobs/_extra) subdirectory.
 It gives insight in the simple structure of these tile maps.
 
 See the subdirectory [`_freditor`](../../../tree/main/jobs/_freditor) for more info about FREditor and how to edit tile maps.
@@ -25,7 +25,7 @@ Each byte represents a tile of 16 x 16 pixels: backgrounds, platforms, items, et
 The BLOAD-header is only used by the FREditor tool to load the file using `MSX-BASIC`. It is ignored by by the `loader.asm` of the game.
 The end-address in the BLOAD header do not need to be changed after the other part (assembled `stage?.asm`) is concatenated to get the final `.JOB` file.
 
-The data represented by `stage?.asm` starts at offset 03007H (after 16 x 768 + 7 bytes).
+The data represented by `stage?.asm` starts at offset `03007H` (after 16 x 768 + 7 bytes).
 This data is about textual conversations, color palettes, moving enemies and more.
 
 The tables below shows the complete layout of the `.JOB` file. The first 2 columns are in hex notation.
@@ -33,12 +33,12 @@ The tables below shows the complete layout of the `.JOB` file. The first 2 colum
 
 offset in .JOB file | memory location in game | length in bytes | meaning
 ------------------- | ----------------------- | --------------- | ---------
-*`0000-0006`*  |  *`n.a.     `*      |    *7*    |  *BLOAD-header (ignored by FRantic loader)*
-*`0007-0016`*  |  *`4000-400f`*      |    *16*    |  *1st row*
-*`0017-0026`*  |  *`4010-401f`*      |    *16*    |  *2nd row*
-*`0027-0036`*  |  *`4020-402f`*      |    *16*    |  *3rd row*
-*`....-....`*  |  *`....-....`*      |    *...*    |  *... [764 more rows here]*
-*`2ff7-3006`*  |  *`6ff0-6fff`*      |    *16*    |  *768th row*
+**`0000-0006`**  |  **`n.a.     `**      |    **7**    |   **BLOAD-header (ignored by FRantic loader)**
+**`0007-0016`**  |  **`4000-400f`**      |    **16**    |  **1st row**
+**`0017-0026`**  |  **`4010-401f`**      |    **16**    |  **2nd row**
+**`0027-0036`**  |  **`4020-402f`**      |    **16**    |  **3rd row**
+**`....-....`**  |  **`....-....`**      |    **...**    | **... [764 more rows here]**
+**`2ff7-3006`**  |  **`6ff0-6fff`**      |    **16**    |  **768th row**
 `3007-3026`  |  `7000-701f`      |    32      |   color palette in game
 `3027-3046`  |  `7020-703f`      |    32      |   color palette heads Franc and guest (talking)
 `3047-3056`  |  `7040-704f`      |    16      |   music (0 or 1) at left elevator doors (0-15)
@@ -53,7 +53,7 @@ offset in .JOB file | memory location in game | length in bytes | meaning
 `3366-????`  |  `735f-????`      |    (5 x e) |   enemies and moving platforms, 5 bytes each (e = number of enemies)
 last 5 bytes | last 5 bytes  |     5      |   final dummy enemy: 000H,0C0H,0ECH,0,0
 
-In the table above, everything *italic* represents data from `MAP?.BIN`, the rest is data from `stage?.asm`.
+In the table above, everything **bold** represents data from `MAP?.BIN`, the rest is data from `stage?.asm`.
 
 List of enemy types:
 
@@ -83,7 +83,7 @@ Suppose you want to change Job 3, then follow this workflow:
 - Copy `MAP3.BIN` from the virtual MSX Disk to this directory, for example use a tool like [Disk-Manager](http://www.lexlechz.at/en/software/DiskMgr.html).
 
 ![freditor](./_freditor/freditor.png)
-Above: FREditor with addresses shown after `[SELECT]` key pressed. For example, the 2 bombs are at `08185H` and `081BBH`.
+*Above: FREditor with addresses shown after `[SELECT]` key pressed. For example, the 2 bombs are at `08185H` and `081BBH`.*
 
 Now edit `stage3.asm`. Here you can edit:
  - Color palettes of Job 3 graphics.
@@ -137,8 +137,8 @@ Such location adressess are used for Franc's start position and within the list 
 
 For example, the first 2 enemies of Job 3 (see `stage3.asm`) are two 'yellow diggers':
 ```
-  DEFB  064H,041H,1,5,0 ; enemy 5 = yellow digger at location 04164H (in FReditor: 8164)
-  DEFB  06AH,041H,2,5,0 ; enemy 5 = yellow digger at location 0416AH (in FReditor: 816A)
+DEFB  064H,041H,1,5,0 ; enemy 5 = yellow digger at location 04164H (in FReditor: 8164)
+DEFB  06AH,041H,2,5,0 ; enemy 5 = yellow digger at location 0416AH (in FReditor: 816A)
 ```
 The 5th byte (extra data) is only used for birds and moving platforms. 
 
@@ -147,7 +147,7 @@ The 5th byte (extra data) is only used for birds and moving platforms.
 For birds, the 5th byte describes the second low-byte, so that the bird can fly a horizontal line.
 For example, the first bird of Job 3 is as follows:
 ```
- DEFB 04DH,042H,3,1,042H ; bird flies between 0424DH and 04242H (in FReditor: 824D-8242)
+DEFB 04DH,042H,3,1,042H ; bird flies between 0424DH and 04242H (in FReditor: 824D-8242)
 ```
 
 #### The 'extra data' for hovering platforms
@@ -161,16 +161,16 @@ For hovering platforms, the 5th byte describes:
 #### Example: horizontal hovering platform
 
 ```
- DEFB 0E2H,04CH,16,6,8 ; platform starts at 04CE2H (in FReditor: 8CE2) and moves 8 blocks to the right.
+DEFB 0E2H,04CH,16,6,8 ; platform starts at 04CE2H (in FReditor: 8CE2) and moves 8 blocks to the right.
 ```
 
 #### Example: vertical hovering platform
 
 ```
- DEFB  0ACH,046H,11,7,36+64     ; starts at 046ACH, moves vertical (+64), moves 36 blocks DOWN from here
- DEFB  074H,047H,12,2,0         ; an enemy between begin and end of vertical hovering platform
- DEFB  0C5H,047H,13,3,0         ; an enemy between begin and end of vertical hovering platform
- DEFB  0ECH,048H,11,7,36+128+64 ; starts at 048ECH, moves vertical (+64), moves 36 blocks UP (+128) from here
+DEFB  0ACH,046H,11,7,36+64     ; starts at 046ACH, moves vertical (+64), moves 36 blocks DOWN from here
+DEFB  074H,047H,12,2,0         ; an enemy between begin and end of vertical hovering platform
+DEFB  0C5H,047H,13,3,0         ; an enemy between begin and end of vertical hovering platform
+DEFB  0ECH,048H,11,7,36+128+64 ; starts at 048ECH, moves vertical (+64), moves 36 blocks UP (+128) from here
 ```
 Notes:
 - The platforms at `046ACH` and `048ECH` are ONE AND THE SAME!! For technical reasons, 
@@ -187,7 +187,7 @@ The list of enemies/platforms must always be ordered by the location address.
 See the example above:  `046ACH` -> `04774H` -> `047C5H` -> `048ECH` ( = ordered from low to high).
 This is to assure that the right enemies/platforms appear while Franc moves up/down through the Job.
 
-The last 5 bytes (`000H,0C0H,236,0,0`) are needed to prevent 'random' enemies at the bottom of the Job.
+The last 5 bytes in `stage?.asm` (`000H,0C0H,236,0,0`) are needed to prevent 'random' enemies at the bottom of the Job.
 
 
 
