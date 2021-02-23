@@ -54,18 +54,6 @@ offset in .JOB file | memory location in game | length in bytes | meaning
 last 5 bytes | last 5 bytes  |     5      |   final dummy enemy: 000H,0C0H,0ECH,0,0
 
 In the table above, everything **bold** represents data from `MAP?.BIN`, the rest is data from `stage?.asm`.
-
-List of enemy types:
-
-number | type
--- | ----
- 1 | bird
- 2 | yellow rat
- 3 | kangaroo
- 4 | spider
- 5 | yellow digger
- 6 | moving platform1 (not an enemy, never mind...)
- 7 | moving platform2 (not an enemy, never mind...)
  
 See further down this document for more details about enemy data structure.
  
@@ -115,15 +103,15 @@ The moving enemies (like bird, spider, etc.) and the hovering platforms are the 
 All location addresses are `04000H` lower than shown in FReditor. 
 For example, when you see address `8052` in FReditor (use `[SELECT]` key), you need to edit:
 `DW 04052H` (or:  `DB 052H,040H` ).
-Such location adressess are used for Franc's start position and within the list of enemies/moving platforms.
+Such location addresses are used for Franc's start position and within the list of enemies/moving platforms.
 
 #### Each enemy is described with 5 bytes:
 
 - low-byte of location address
 - high-byte of location address
 - unique `ID` of enemy
-- enemy type (1,2,3,4,5,6 or 7)
-- extra data (only used with enemy type 1,6,7: bird or moving platform)
+- enemy type (1, 2, 3, 4, 5, 6 or 7)
+- extra data (only used with enemy type 1, 6, 7: bird or moving platform)
 
 #### List of enemy types:
 
@@ -154,23 +142,23 @@ DEFB 04DH,042H,3,1,042H ; bird flies between 0424DH and 04242H (in FReditor: 824
 
 For hovering platforms, the 5th byte describes:
 
-- amount of blocks to move (maximum: 63)
+- amount of tiles to move (maximum: 63)
 - whether platform moves vertically (add 64 if true)
 - whether platform moves up OR left from start position (add 128 if true)
 
 #### Example: horizontal hovering platform
 
 ```
-DEFB 0E2H,04CH,16,6,8 ; platform starts at 04CE2H (in FReditor: 8CE2) and moves 8 blocks to the right.
+DEFB 0E2H,04CH,16,6,8 ; platform starts at 04CE2H (in FReditor: 8CE2) and moves 8 tiles to the right.
 ```
 
 #### Example: vertical hovering platform
 
 ```
-DEFB  0ACH,046H,11,7,36+64     ; starts at 046ACH, moves vertical (+64), moves 36 blocks DOWN from here
+DEFB  0ACH,046H,11,7,36+64     ; starts at 046ACH, moves vertical (+64), moves 36 tiles DOWN from here
 DEFB  074H,047H,12,2,0         ; an enemy between begin and end of vertical hovering platform
 DEFB  0C5H,047H,13,3,0         ; an enemy between begin and end of vertical hovering platform
-DEFB  0ECH,048H,11,7,36+128+64 ; starts at 048ECH, moves vertical (+64), moves 36 blocks UP (+128) from here
+DEFB  0ECH,048H,11,7,36+128+64 ; starts at 048ECH, moves vertical (+64), moves 36 tiles UP (+128) from here
 ```
 Notes:
 - The platforms at `046ACH` and `048ECH` are ONE AND THE SAME!! For technical reasons, 
