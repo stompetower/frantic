@@ -17,8 +17,8 @@ Same graphics with different color palettes:
 
 Same graphics with different color palettes:
 
-![intro](intro_page3_palette_A).png) ![intro](intro_page3_palette_B).png)  
-![intro](intro_page3_palette_C).png) ![intro](intro_page3_palette_D).png)
+![intro](intro_page3_palette_A.png) ![intro](intro_page3_palette_B.png)  
+![intro](intro_page3_palette_C.png) ![intro](intro_page3_palette_D.png)
 
 
 ## During gameplay

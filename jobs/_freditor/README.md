@@ -8,7 +8,7 @@ The tool is provided in this directory (`freditor.dsk`) or part of [this downloa
 ## FReditor keyboard shortcuts
 
 
-#### Items can be placed by using number keys
+#### Items and food can be placed by using number keys
 
 - `1` = bottle anti-poison
 - `2` = water supply - for spitting
@@ -76,7 +76,7 @@ The tool is provided in this directory (`freditor.dsk`) or part of [this downloa
 - `[CAPS]+cursors`  =  move up/down without moving the cursor
 
 #### Other (load, save, .. )
------------------------------------------
+
 - `[SELECT]` =  Show HEX address of each location (use for enemy coding, like spiders,etc.)
 - `[ESC]`    =  After `[ESC]`, type `L` for Load, `S` for Save, `P` for PICTURE-save.
 

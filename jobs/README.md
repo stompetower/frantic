@@ -60,7 +60,7 @@ See further down this document for more details about enemy data structure.
 ## Workflow to build `.JOB` file
  
 Suppose you want to change Job 3, then follow this workflow:
-- Start FReditor. Use the MSX disk `'FReditor.dsk'` in the `_freditor` subdirectory of this repository. It's also available as part of [this download](https://www.msx.org/downloads/anmas-frantic-sources).
+- Start FReditor. Use the MSX disk `'freditor.dsk'` in the `_freditor` subdirectory of this repository. It's also available as part of [this download](https://www.msx.org/downloads/anmas-frantic-sources).
 - Ensure that the design to edit is on the same MSX disk (in this case: `MAP3.BIN`).
 - Choose `3` when asked for stage number. This results in Job 3 graphics being loaded for editing.
 - Type `[ESC]` followed by `L` to load a file. All files on the current disk will be shown in text mode.
