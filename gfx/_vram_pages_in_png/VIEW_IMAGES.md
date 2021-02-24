@@ -1,4 +1,4 @@
-# Overview over graphics in VRAM
+# Overview of graphics in VRAM
 
 ## During intro & story
 
