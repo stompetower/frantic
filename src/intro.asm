@@ -1,5 +1,15 @@
 	ORG	08100H
 
+INITMUSDAT:	EQU 0000H ; start/initialize new music/song
+REPLAYROUT:	EQU 0003H ; interrupt routine for playing music
+ALLMUSICOFF:	EQU 0006H ; turn off music all at once
+SETVOLUDEC:	EQU 0009H ; start fading out music volume
+SETPSGEFF:	EQU 001BH ; start new PSG sound effect
+SETFMPEFF:	EQU 001EH ; start new FM sound effect
+EFFPSGBEG:	EQU 0024H ; interrupt routine for playing PSG sound effects
+EFFFMPBEG:	EQU 0027H ; interrupt routine for playing FM sound effects
+MUSADRES:	EQU 002DH ; prepare music data (relative offsets -> absolute RAM addresses)
+	
 START:
 	JP	STARTDEMO
 
@@ -657,15 +667,15 @@ NIETS:	RET
 EFFECTOR:
 	LD	A,(0FC82H)
 	OR	A
-	JP	NZ,0001EH	;zet FM effect
+	JP	NZ,SETFMPEFF	;zet FM effect
 	EX	DE,HL
-	JP	0001BH	;zet PSG effect
+	JP	SETPSGEFF	;zet PSG effect
 
 	;stelt FM en PSG effect gelijktijdig in. HL=FMeffect, DE=PSGeffect
 EFFECTAND:
-	CALL	0001EH
+	CALL	SETFMPEFF
 	EX	DE,HL
-	JP	0001BH
+	JP	SETPSGEFF
 
 	;Stelt FM en PSG effect in of alleen (een ander) PSG effect.
 	;HL=FMeffect, BC=PSGeffect, DE=losstaand PSG effect.
@@ -673,18 +683,18 @@ EFFECTOR2:
 	LD	A,(0FC82H)
 	OR	A
 	JR	Z,EFFECTOR2B
-	CALL	0001EH
+	CALL	SETFMPEFF
 	LD	D,B
 	LD	E,C
 EFFECTOR2B:
 	EX	DE,HL
-	JP	0001BH
+	JP	SETPSGEFF
 
 	;Alleen muziek in interrupt
 INTMUSIC:
-	CALL	00024H	;speel PSG effect
-	CALL	00027H	;speel FM effect
-	JP	00003H	;speel muziek
+	CALL	EFFPSGBEG	;speel PSG effect
+	CALL	EFFFMPBEG	;speel FM effect
+	JP	REPLAYROUT	;speel muziek
 
 VOLUMESSS:	DW	00F0FH	;volume van PSG en FM
 
@@ -1035,9 +1045,9 @@ STARTDEMO:
 
 	LD	HL,01800H	;muziek initialiseren
 	LD	BC,06000H
-	CALL	0002DH	;INIT MUSIC DATA
+	CALL	MUSADRES	;INIT MUSIC DATA
 	LD	HL,01804H
-	CALL	0
+	CALL	INITMUSDAT
 	CALL	INITVDPS
 	CALL	INSTMUSINT
 	;instellingkies voor password input
@@ -1071,7 +1081,7 @@ RESTART:
 
 QUITDEMO:
 	DI
-	CALL	00006H	;muziek helemaal uit
+	CALL	ALLMUSICOFF	;muziek helemaal uit
 	LD	SP,(STACK)
 	LD	HL,CLRSCRCOMM	;scherm wissen (page 0)
 	CALL	VDPCOMM2
