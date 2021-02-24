@@ -4,18 +4,20 @@ The game graphics (`.GRP` files) are loaded by the code in `loader.asm`, where t
 
 The files in this directory show exactly (in `.png` format) which graphics are loaded in which VRAM page in which phase of the game (intro, gameplay, ending).
 
+Go to [`VIEW_IMAGES.md`](./VIEW_IMAGES.md) in this directory to view all graphics.
+
 file in this directory | game phase | which VRAM page
 -------- | ---- | -------
-`intro_page1 (palette X).png` | intro + story | 1
-`intro_page2 (palette X).png` | intro + story | 2
-`intro_page3 (palette X).png` | intro + story | 3
+`intro_page1_palette_X.png` | intro + story | 1
+`intro_page2_palette_X.png` | intro + story | 2
+`intro_page3_palette_X.png` | intro + story | 3
 `game_job?_page1.png` | game play | 1
-`game_page2 (palette X).png` | game play | 2
+`game_page2_palette_X.png` | game play | 2
 `ending_page1.png` | ending | 1
-`ending_page2 (palette X).png` | ending | 2
+`ending_page2_palette_X.png` | ending | 2
 
 Note that:
-- `(palette X)` in the above table means that the same graphics data is represented by multiple `.png` files (where `X` is `A`/`B`/`C`, etc.), each time with a different color palette.
+- `_palette_X` in the above table means that the same graphics data is represented by multiple `.png` files (where `X` = `A`/`B`/`C`, etc.), each time with a different color palette.
 - All graphics are made for SCREEN 5 mode (16 colors, from palette of 512 colors).
 - In SCREEN 5 mode, there are 4 pages (0, 1, 2 and 3).
 - The visible page in Frantic is always VRAM page 0.
@@ -31,8 +33,8 @@ See the table below:
 
 file in this directory | from line (Y) | #lines | description
 -------- | ---- | ------- | -------
-intro_page1.png | 240 | 16 | sprite pattern data during intro (Amazing ANMA)
-intro_page2.png | 240 | 16 | sprite pattern data during intro (story part)
+intro_page1_palette_X.png | 240 | 16 | sprite pattern data during intro (Amazing ANMA)
+intro_page2_palette_X.png | 240 | 16 | sprite pattern data during intro (story part)
 game_job?_page1.png | 112 | 32 | sprite pattern data of animating Franc (32 x 4 sprites)
 game_job?_page1.png | 212 | 20 | sprite pattern data of animating enemies
 game_job?_page1.png | 232 | 4 | sprite color table [*1]
