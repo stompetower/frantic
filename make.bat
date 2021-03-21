@@ -1,14 +1,11 @@
 :: Frantic Makefile (Windows)
 
 @echo off
-:: location of Glass Assembler, if not in PATH
-set glass="D:\Programs Portable\Z80 Glass\glass-0.5.jar"
-
-:: glass if in PATH (uncomment)
-:: set glass="glass"
+:: Z80 Glass cross-assembler
+set glass="glass-0.5.jar"
 
 :: location of Java, if not in PATH
-set java8="c:\Program Files\Java\jre1.8.0_221\bin\java.exe"
+set java8="C:\Program Files (x86)\Common Files\Oracle\Java\javapath\java.exe"
 
 :: if java in PATH
 set java8="java"
@@ -32,14 +29,6 @@ if not exist dsk mkdir dsk
 %java8% -jar %glass% jobs\stage4.asm STAGE4.BIN
 %java8% -jar %glass% jobs\stage5.asm STAGE5.BIN
 %java8% -jar %glass% jobs\stage6.asm STAGE6.BIN
-
-:: map data
-:: %java8% -jar %glass% src\map1.asm MAP1.BIN
-:: %java8% -jar %glass% src\map2.asm MAP2.BIN
-:: %java8% -jar %glass% src\map3.asm MAP3.BIN
-:: %java8% -jar %glass% src\map4.asm MAP4.BIN
-:: %java8% -jar %glass% src\map5.asm MAP5.BIN
-:: %java8% -jar %glass% src\map6.asm MAP6.BIN
 
 :: Combine stage with map data to JOB file
 copy jobs\MAP1.BIN/B + STAGE1.BIN/B dsk\FRANTIC1.JOB
