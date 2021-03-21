@@ -14,7 +14,7 @@ You also might want to read [how to play](./_extra/how_to_play.md) this game.
 ## Usage
 
 
-#### Step 1 - prepare your system
+### Step 1 - prepare your system
 
 You need the [Java Runtime Environment](https://www.java.com/download/), because the Z80-assembler `glass-0.5.jar` depends on it. 
 [Git](https://git-scm.com/downloads) is preferred (but optional) to get the files. For example, with popular Linux distributions, you can prepare your system like this:
@@ -24,7 +24,7 @@ sudo apt install openjdk-8-jre
 sudo apt install git
 ```
 
-#### Step 2 - download the files
+### Step 2 - download the files
 
 If you have `git` installed:
 ```
@@ -32,7 +32,7 @@ git clone https://github.com/stompetower/frantic
 ```
 If you don't have git installed: download the `.zip` file of this repository (about 35MB) and unpack.
 
-#### Step 3 - run the make script
+### Step 3 - run the make script
 
 Linux:
 ```
@@ -57,13 +57,13 @@ This game can run within a MSX emulator or on a real MSX-2 (or higher). Insert t
 BLOAD"FRANTIC.LOD",R
 ```
 
-#### Running within an emulator
+### Running within an emulator
 
 For example, you can use the [openMSX emulator](https://openmsx.org/). This emulator can use a directory with files as if it were a floppy disk (DirAsDisk). This way, you can run the game straight from the generated files in the `dsk` directory.
 
 Instead you can also create a `frantic.dsk` file (a 720kB virtual floppy disk file). In that case, you need a tool like [Disk-Manager](http://www.lexlechz.at/en/software/DiskMgr.html).
 
-#### Running on a real MSX-2
+### Running on a real MSX-2
 
 You need a real MSX-2 (or higher) with a 720kB floppy disk drive. The MSX computer must have at least a 64kB RAM (memory mapper) and 128kB VRAM (which every common MSX-2 or higher will have).
 
@@ -91,20 +91,20 @@ SAVE"AUTOEXEC.BAS"
 
 This repository allows you to modify the Z80 logic in any way you like. Changing other content (Jobs, Music, Graphics) is also possible, but is somewhat less straightforward.
 
-#### Modify logic / Z80 code
+### Modify logic / Z80 code
 
 Just change any `.asm` file in the [`src`](../../tree/main/src) directory and run the `make.bat` again.
 
-#### Modify Job content
+### Modify Job content
 
 See more info in the [`jobs`](../../tree/main/jobs) directory.
 Also look in this directory in case you want to create a modern job / stage editor for Frantic.
 
-#### Modify music
+### Modify music
 
 See more info in the [`mus`](../../tree/main/mus) directory.
 
-#### Modify graphics
+### Modify graphics
 
 See more info in the [`gfx`](../../tree/main/gfx) directory.
 
