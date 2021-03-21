@@ -1,6 +1,6 @@
-# Modifications (compared to original code)
+# Modifications (to the original code)
 
-## Mods that changed the binary
+## Modifications that changed the binary
 
 #### Solved unsafe PSG port directions
 
@@ -47,10 +47,10 @@ The original binaries have some unused random bytes at the end of the file.
 In this repository these random unused bytes have been replaced by `00` bytes.
 
 
-## Mods that did not change the binary
+## Modifications that did NOT change the binary
 
 - Made code suitable for [Z80 Glass assembler](http://www.grauw.nl/projects/glass/).
-- `replayer.asm` has been commented extensively.
-
+- [`replayer.asm`](replayer.asm) has been commented extensively.
+- Added some `EQU` pragma's for entries to music/sound effect routines (example: `REPLAYROUT: EQU 0003H`) for more readable code.
 
 
