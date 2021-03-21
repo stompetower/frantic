@@ -13,9 +13,42 @@ You also might want to read [how to play](./_extra/how_to_play.md) this game.
 
 ## Usage
 
-As a prerequisite, you need the [Java Runtime Environment](https://www.java.com/download/) and the [Z80 Glass Assembler](http://www.grauw.nl/projects/glass/) which is just a portable `.jar` (Java ARchive) file.
 
-Just run [`make.bat`](./make.bat) on a Windows based machine and see the files being generated in the `dsk` directory. You might need to correct the paths to `jave.exe` and `glass-0.5.jar` in the [`make.bat`](./make.bat) file.
+#### Step 1 - prepare your system
+
+You need the [Java Runtime Environment](https://www.java.com/download/), because the Z80-assembler `glass-0.5.jar` depends on it. 
+[Git](https://git-scm.com/downloads) is preferred (but optional) to get the files. For example, with popular Linux distributions, you can prepare your system like this:
+```
+sudo apt update
+sudo apt install openjdk-8-jre
+sudo apt install git
+```
+
+#### Step 2 - download the files
+
+If you have `git` installed:
+```
+git clone https://github.com/stompetower/frantic
+```
+If you don't have git installed: download the `.zip` file of this repository (about 35MB) and unpack.
+
+#### Step 3 - run the make script
+
+Linux:
+```
+cd frantic
+chmod u+x make
+./make
+```
+
+Windows:
+```
+cd frantic
+make
+```
+
+A `dsk` directory will be created with all the game files (for MSX or emulator).
+
 
 ## Running the game
 
@@ -24,36 +57,54 @@ This game can run within a MSX emulator or on a real MSX-2 (or higher). Insert t
 BLOAD"FRANTIC.LOD",R
 ```
 
-### Running within an emulator
+#### Running within an emulator
 
 For example, you can use the [openMSX emulator](https://openmsx.org/). This emulator can use a directory with files as if it were a floppy disk (DirAsDisk). This way, you can run the game straight from the generated files in the `dsk` directory.
 
 Instead you can also create a `frantic.dsk` file (a 720kB virtual floppy disk file). In that case, you need a tool like [Disk-Manager](http://www.lexlechz.at/en/software/DiskMgr.html).
 
-### Running on a real MSX-2
+#### Running on a real MSX-2
 
 You need a real MSX-2 (or higher) with a 720kB floppy disk drive. The MSX computer must have at least a 64kB RAM (memory mapper) and 128kB VRAM (which every common MSX-2 or higher will have).
 
 You also need to copy the generated files to a physical 720kB (3.5 inch) floppy disk. This can be done with a tool like [Disk-Manager](http://www.lexlechz.at/en/software/DiskMgr.html), but you need to have a 3.5 inch floppy disk drive connected to your PC (internal or USB) in order to copy the files.
 
+
+## Optional `AUTOEXEC.BAS`
+
+Instead of running the game by `BLOAD"FRANTIC.LOD",R`, you can also create a `AUTOEXEC.BAS` that will load the game after the MSX (or emulator) is booted (with the game disk inserted).
+Type this using the MSX (or emulator) with the (virtual) game disk inserted:
+```
+10 ` FRANTIC v10 - (c)1992 ANMA
+20 `
+30 SCREEN 0:KEY OFF
+40 IF (PEEK(&HFAFC)AND4)=0 THEN 80
+50 PRINT"Loading FRANTIC... "
+60 BLOAD"FRANTIC.LOD",R
+70 CLS:PRINT"No 64 kB memory mapper.":END
+80 PRINT"No 128 kB VRAM.":END
+
+SAVE"AUTOEXEC.BAS"
+```
+
 ## Modify / improve this game
 
 This repository allows you to modify the Z80 logic in any way you like. Changing other content (Jobs, Music, Graphics) is also possible, but is somewhat less straightforward.
 
-### Modify logic / Z80 code
+#### Modify logic / Z80 code
 
 Just change any `.asm` file in the [`src`](../../tree/main/src) directory and run the `make.bat` again.
 
-### Modify Job content
+#### Modify Job content
 
 See more info in the [`jobs`](../../tree/main/jobs) directory.
 Also look in this directory in case you want to create a modern job / stage editor for Frantic.
 
-### Modify music
+#### Modify music
 
 See more info in the [`mus`](../../tree/main/mus) directory.
 
-### Modify graphics
+#### Modify graphics
 
 See more info in the [`gfx`](../../tree/main/gfx) directory.
 
@@ -107,7 +158,9 @@ Which license???
 
 ## Credits
 
-[Thom Zwagers](https://github.com/thomzwg) did most of the work for this repository, like reverse-engineering lost source code. He also made the source code suitable for the Glass cross-assembler. André Ligthart did the documentation and the comments in the `replayer.asm` file. [ANMA](https://www.msx.org/wiki/ANMA) (André Ligthart and Martijn Maatjens) made the original game.
+[Thom Zwagers](https://github.com/thomzwg) did most of the work for this repository, like reverse-engineering lost source code. He also made the source code suitable for the Glass cross-assembler. 
+André Ligthart did the documentation and the comments in the `replayer.asm` file. [ANMA](https://www.msx.org/wiki/ANMA) (André Ligthart and Martijn Maatjens) made the original game.
+Grauw / Laurens Holst made the [Glass cross-assembler](http://www.grauw.nl/projects/glass/) used to build the source files.
 
 ## History
 
@@ -124,11 +177,18 @@ Besides the source code (and the necessary game binaries), this repository inclu
 
 - All jobs / stages extracted as [`.png` images](../../tree/main/_extra/_jobs_as_png_maps).
 - The [map_maker](../../tree/main/_extra/_jobs_as_png_maps/_map_maker) (C# code) that created these images.
+- The map (tiles) part of all [Jobs in `.asm` format](../../tree/main/jobs/_extra) (alternative to the [binary format](../../tree/main/jobs)).
 - [History documents](../../tree/main/_extra/_history) about Frantic.
 - [The tools](../../tree/main/_extra/_history_tools) ANMA used in 1992.
 - A [manual](../../tree/main/mus/_tracker_files/_tracker_RED) of the used music tracker RED with a [list of all effects](../../blob/main/mus/_tracker_files/_tracker_RED/RED_EFFECTS.md).
 - The [custom build hardware](../../tree/main/mus/_tracker_files/_tracker_RED_custom_hardware) that was used together with the music tracker.
+- All [music in `.AMU` format](../../tree/main/mus/_tracker_files) that can be edited with the music tracker RED.
+- All music in [readable `.TXT` format](../..//tree/main/mus/_extra).
 - Info about [sprites](../../tree/main/gfx/_sprites) and [where in VRAM](../../tree/main/gfx/_vram_pages_in_png) the graphics are loaded.
+
+
+
+
 
 
 
