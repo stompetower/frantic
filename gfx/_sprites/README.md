@@ -35,8 +35,11 @@ color1 | color2 | color1 OR color2 | comment
 6 | 11 | 15 | dark yellow, white, black
 3 | 14 | 15 | brown, dark blue, black
 
-See `palettes.png` where the color palette for each stage/job is shown. There you can see that only the colors 2, 4, 8 and 12 vary per job/stage of the game.
+Below (see also `palettes.png`) the color palette for each stage/job is shown.
+You can see that only the colors 2, 4, 8 and 12 vary per job/stage of the game.
 None of these colors (that will change with each job) are used in sprite graphics.
+
+![palettes](palettes.png)
 
 These (more simple) sprites do not use the 3-color feature:
 - skewers
