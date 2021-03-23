@@ -4,7 +4,7 @@ Each `.JOB` file is made up of two separate parts, which are simply concatenated
 - `MAP?.BIN` which contains all background tiles and can be edited with FREditor, a custom made editor.
 - `stage?.asm` which should be assembled and then concatenated to the `MAP?.BIN`
 
-Instead of using FREditor, the tiles can also be edited in text (this is more awkward). Look at the `map?.asm` files in the [`_extra`](../../../tree/main/jobs/_extra) subdirectory.
+Instead of using FREditor, the tiles can also be edited in text (this is more awkward). Look at the `map?.asm` files in the [`_maps_in_asm`](../../../tree/main/jobs/_maps_in_asm) subdirectory.
 It gives insight in the simple structure of these tile maps.
 
 See the subdirectory [`_freditor`](../../../tree/main/jobs/_freditor) for more info about FREditor and how to edit tile maps.
@@ -33,7 +33,7 @@ The tables below shows the complete layout of the `.JOB` file. The first 2 colum
 
 offset in .JOB file | memory location in game | length in bytes | meaning
 ------------------- | ----------------------- | --------------- | ---------
-**`0000-0006`**  |  **`n.a.     `**      |    **7**    |   **BLOAD-header (ignored by FRantic loader)**
+**`0000-0006`**  |  **`n.a.     `**      |    **7**    |   **BLOAD-header (ignored by Frantic loader, but used by FREditor)**
 **`0007-0016`**  |  **`4000-400f`**      |    **16**    |  **1st row**
 **`0017-0026`**  |  **`4010-401f`**      |    **16**    |  **2nd row**
 **`0027-0036`**  |  **`4020-402f`**      |    **16**    |  **3rd row**
@@ -125,8 +125,8 @@ Such location addresses are used for Franc's start position and within the list 
 
 For example, the first 2 enemies of Job 3 (see `stage3.asm`) are two 'yellow diggers':
 ```
-DEFB  064H,041H,1,5,0 ; enemy 5 = yellow digger with ID=1 at location 04164H (in FReditor: 8164)
-DEFB  06AH,041H,2,5,0 ; enemy 5 = yellow digger with ID=2 at location 0416AH (in FReditor: 816A)
+DB  064H,041H,1,5,0 ; enemy 5 = yellow digger with ID=1 at location 04164H (in FReditor: 8164)
+DB  06AH,041H,2,5,0 ; enemy 5 = yellow digger with ID=2 at location 0416AH (in FReditor: 816A)
 ```
 The 5th byte (extra data) is only used for birds and moving platforms. 
 
@@ -135,7 +135,7 @@ The 5th byte (extra data) is only used for birds and moving platforms.
 For birds, the 5th byte describes the second low-byte, so that the bird can fly a horizontal line.
 For example, the first bird of Job 3 is as follows:
 ```
-DEFB 04DH,042H,3,1,042H ; bird flies between 0424DH and 04242H (in FReditor: 824D-8242)
+DB 04DH,042H,3,1,042H ; bird flies between 0424DH and 04242H (in FReditor: 824D-8242)
 ```
 
 #### The 'extra data' for hovering platforms
@@ -149,16 +149,16 @@ For hovering platforms, the 5th byte describes:
 #### Example: horizontal hovering platform
 
 ```
-DEFB 0E2H,04CH,16,6,8 ; platform starts at 04CE2H (in FReditor: 8CE2) and moves 8 tiles to the right.
+DB 0E2H,04CH,16,6,8 ; platform starts at 04CE2H (in FReditor: 8CE2) and moves 8 tiles to the right.
 ```
 
 #### Example: vertical hovering platform
 
 ```
-DEFB  0ACH,046H,11,7,36+64     ; starts at 046ACH, moves vertical (+64), moves 36 tiles DOWN from here
-DEFB  074H,047H,12,2,0         ; an enemy between begin and end of vertical hovering platform
-DEFB  0C5H,047H,13,3,0         ; an enemy between begin and end of vertical hovering platform
-DEFB  0ECH,048H,11,7,36+128+64 ; starts at 048ECH, moves vertical (+64), moves 36 tiles UP (+128) from here
+DB  0ACH,046H,11,7,36+64     ; starts at 046ACH, moves vertical (+64), moves 36 tiles DOWN from here
+DB  074H,047H,12,2,0         ; an enemy between begin and end of vertical hovering platform
+DB  0C5H,047H,13,3,0         ; an enemy between begin and end of vertical hovering platform
+DB  0ECH,048H,11,7,36+128+64 ; starts at 048ECH, moves vertical (+64), moves 36 tiles UP (+128) from here
 ```
 Notes:
 - The platforms at `046ACH` and `048ECH` are ONE AND THE SAME!! For technical reasons, 
