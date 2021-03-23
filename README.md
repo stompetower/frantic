@@ -72,7 +72,7 @@ You also need to copy the generated files to a physical 720kB (3.5 inch) floppy 
 
 ## Optional `AUTOEXEC.BAS`
 
-Instead of running the game by `BLOAD"FRANTIC.LOD",R`, you can also create a `AUTOEXEC.BAS` that will load the game after the MSX (or emulator) is booted (with the game disk inserted).
+Instead of running the game by `BLOAD"FRANTIC.LOD",R`, you can create an `AUTOEXEC.BAS` that will load the game after the MSX (or emulator) is booted (with the game disk inserted).
 It will also check if your MSX-2 (or emulator) meets the minimum RAM/VRAM requirements, just like the `AUTOEXEC.BAS` of the original game.
 Type this using the MSX (or emulator) with the (virtual) game disk inserted:
 ```
@@ -155,7 +155,7 @@ The game has 6 Jobs (=stages). Each Job has its own graphics and also two songs,
 
 ## License
 
-Which license???
+Mozilla Public License 2.0, see [LICENSE](LICENSE).
 
 ## Credits
 
