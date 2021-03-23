@@ -16,13 +16,13 @@ All sprites are included in the game files `FRANTIC1.GRP` (intro sprites) and `F
 In VRAM the sprite pattern data is typically stored in a bit-per-pixel manner. 
 The table below shows where in VRAM the sprite patterns are stored when the game is running.
 
-sprite patterns (see file in this directory) | game phase | Number of sprites | VRAM page | lines (Y)
--------- | ---- | ------- | ------- | -------
-intro_amazing_anma.png | intro + story | 60 | 1 | 240-255
-intro_title_story.png | intro + story | 24 | 2 | 240-255
-game.png | game play | 48 | 1 | 240-251
-game_franc.png | game play | 128 | 1 | 112-143 [*]
-game_enemies.png | game play | 80 | 1 | 212-231 [*]
+sprite patterns (see file in this directory) | game phase | Number of sprites | VRAM page
+-------- | ---- | ------- | -------
+intro_amazing_anma.png | intro + story | 60 | 1 (lines 240-255)
+intro_title_story.png | intro + story | 24 | 2 (lines 240-255)
+game.png | game play | 48 | 1 (lines 240-251)
+game_franc.png | game play | 128 | 1 (lines 112-143) [*]
+game_enemies.png | game play | 80 | 1 (lines 212-231) [*]
 
 [*] pattern data of Franc and enemies are dynamically copied to the sprite pattern table.
 
