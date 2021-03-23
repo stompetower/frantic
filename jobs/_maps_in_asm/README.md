@@ -29,12 +29,12 @@ DB 09CH, 003H, 002H, 003H, 002H, 007H, 006H, 007H, 002H, 003H, 014H, 015H, 016H,
 DB 09CH, 001H, 000H, 00CH, 00DH, 001H, 000H, 001H, 000H, 001H, 018H, 019H, 01AH, 01BH, 000H, 09DH
 DB 09CH, 003H, 002H, 00EH, 00FH, 003H, 002H, 003H, 002H, 003H, 01CH, 01DH, 01EH, 01FH, 002H, 09DH
 DB 09CH, 001H, 000H, 001H, 000H, 001H, 000H, 080H, 084H, 001H, 000H, 001H, 000H, 001H, 000H, 09DH
-                      ^     ^                  ^    ^           ^     ^     ^     ^                        ^
+                      ^     ^                  ^    ^           ^     ^     ^     ^
                       |     |                  |    |           |     |     |     |
                       |     |                  |    |           010H to 01FH = 4x4 background decoration
 00CH to 00FH = 2x2 background                  |    |
                    decoration                  |    084H = cracked platform
-                                               |    
+                                               |
                                                080H = normal platform
 ```
 
