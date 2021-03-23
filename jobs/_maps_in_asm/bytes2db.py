@@ -1,7 +1,7 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 """ Convert Frantic JOB binaries into asm files
 use:
-    python3 bytes2db.py input output
+    python bytes2db.py input output
 """
 
 import sys

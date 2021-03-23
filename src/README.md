@@ -21,7 +21,7 @@ Source code file | Resulting binary file | What's in it
  | | |
 **einde.gen** | FRANTIC3.BIN | Game Ending Demo
 
-Non-Italic and Bold file names are the main source code files (the others are includes).
+File names in **bold font** represent the main source code files (*italic* file names are includes).
 
 [*] copy protection (floppy bad sector check) is removed.
 

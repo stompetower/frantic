@@ -165,7 +165,7 @@ Grauw / [Laurens Holst](http://www.grauw.nl/about/) made the [Glass cross-assemb
 
 ## History
 
-This game was developed and released in 1992 with [MSX hardware](../../blob/main/_extra/_history_tools/USED_HARDWARE.md) (mainly the [Sony HB-F700P](https://www.msx.org/wiki/Sony_HB-F700P)). The assembler used was GEN80.COM (version 2.04, HiSoft 1987).
+This game was released in 1992. It was created using [MSX hardware](../../blob/main/_extra/_history_tools/USED_HARDWARE.md) (mainly the [Sony HB-F700P](https://www.msx.org/wiki/Sony_HB-F700P)). The assembler used was GEN80.COM (version 2.04, HiSoft 1987).
 The text editor used was TED (version 2.6 by M.J. Vriend). The graphics editor used was Halos (from Sony).
 The music tracker used was [ANMA's RED](https://www.msx.org/news/software/en/anmas-red-music-recordereditor-available-for-download),
 which can be [downloaded here](https://www.msx.org/downloads/anmas-red-music-recordereditor-incuding-music-etc).

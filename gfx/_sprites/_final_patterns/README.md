@@ -8,13 +8,13 @@ For example, there are 128 sprites of the player Franc (32 positions of 4 sprite
 
 Go to [`VIEW_IMAGES.md`](./VIEW_IMAGES.md) in this directory to view all sprite patterns.
 
-All sprites are included in the game files `FRANTIC1.GRP` (intro sprites) and `FRANTIC3.GRP` (game sprites). The information in the `gfx/_vram_pages_in_png` directory explains exactly where the 'sprite pattern data' and 'sprite color data' is in VRAM. For example, the Franc sprites are in VRAM on page 1 from line 112 to line 143.
+All sprites are included in the game files `FRANTIC1.GRP` (intro sprites) and `FRANTIC3.GRP` (game sprites). 
 
 
 ## Sprite pattern data in VRAM
 
 In VRAM the sprite pattern data is typically stored in a bit-per-pixel manner. 
-The table below shows where in VRAM the sprite patterns are stored when the game is running.
+The table below shows where in VRAM the sprite patterns are stored when the intro graphics or game graphics are loaded.
 
 sprite patterns (see file in this directory) | game phase | Number of sprites | VRAM page
 -------- | ---- | ------- | -------
