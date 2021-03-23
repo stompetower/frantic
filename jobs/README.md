@@ -125,8 +125,8 @@ Such location addresses are used for Franc's start position and within the list 
 
 For example, the first 2 enemies of Job 3 (see `stage3.asm`) are two 'yellow diggers':
 ```
-DEFB  064H,041H,1,5,0 ; enemy 5 = yellow digger at location 04164H (in FReditor: 8164)
-DEFB  06AH,041H,2,5,0 ; enemy 5 = yellow digger at location 0416AH (in FReditor: 816A)
+DEFB  064H,041H,1,5,0 ; enemy 5 = yellow digger with ID=1 at location 04164H (in FReditor: 8164)
+DEFB  06AH,041H,2,5,0 ; enemy 5 = yellow digger with ID=2 at location 0416AH (in FReditor: 816A)
 ```
 The 5th byte (extra data) is only used for birds and moving platforms. 
 

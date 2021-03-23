@@ -30,7 +30,7 @@ If you have `git` installed:
 ```
 git clone https://github.com/stompetower/frantic
 ```
-If you don't have git installed: download the `.zip` file of this repository (about 35MB) and unpack.
+If you don't have `git` installed: download the `.zip` file of this repository (about 35MB) and unpack.
 
 ### Step 3 - run the make script
 
@@ -73,9 +73,10 @@ You also need to copy the generated files to a physical 720kB (3.5 inch) floppy 
 ## Optional `AUTOEXEC.BAS`
 
 Instead of running the game by `BLOAD"FRANTIC.LOD",R`, you can also create a `AUTOEXEC.BAS` that will load the game after the MSX (or emulator) is booted (with the game disk inserted).
+It will also check if your MSX-2 (or emulator) meets the minimum RAM/VRAM requirements, just like the `AUTOEXEC.BAS` of the original game.
 Type this using the MSX (or emulator) with the (virtual) game disk inserted:
 ```
-10 ` FRANTIC v10 - (c)1992 ANMA
+10 ` FRANTIC v1 - (c)1992 ANMA
 20 `
 30 SCREEN 0:KEY OFF
 40 IF (PEEK(&HFAFC)AND4)=0 THEN 80
@@ -93,7 +94,7 @@ This repository allows you to modify the Z80 logic in any way you like. Changing
 
 ### Modify logic / Z80 code
 
-Just change any `.asm` file in the [`src`](../../tree/main/src) directory and run the `make.bat` again.
+Just change any `.asm` file in the [`src`](../../tree/main/src) directory and run the `make` script again.
 
 ### Modify Job content
 
@@ -180,10 +181,10 @@ Besides the source code (and the necessary game binaries), this repository inclu
 - The map (tiles) part of all [Jobs in `.asm` format](../../tree/main/jobs/_extra) (alternative to the [binary format](../../tree/main/jobs)).
 - [History documents](../../tree/main/_extra/_history) about Frantic.
 - [The tools](../../tree/main/_extra/_history_tools) ANMA used in 1992.
-- A [manual](../../tree/main/mus/_tracker_files/_tracker_RED) of the used music tracker RED with a [list of all effects](../../blob/main/mus/_tracker_files/_tracker_RED/RED_EFFECTS.md).
-- The [custom build hardware](../../tree/main/mus/_tracker_files/_tracker_RED_custom_hardware) that was used together with the music tracker.
+- A [manual](../../tree/main/mus/_tracker_RED) of the used music tracker RED with a [list of all effects](../../blob/main/mus/_tracker_RED/RED_EFFECTS.md).
+- The [custom build hardware](../../tree/main/mus/_tracker_RED_custom_hardware) that was used together with the music tracker.
 - All [music in `.AMU` format](../../tree/main/mus/_tracker_files) that can be edited with the music tracker RED.
-- All music in [readable `.TXT` format](../..//tree/main/mus/_extra).
+- All music in [readable `.TXT` format](../../tree/main/mus/_tracker_files_txt).
 - Info about [sprites](../../tree/main/gfx/_sprites) and [where in VRAM](../../tree/main/gfx/_vram_pages_in_png) the graphics are loaded.
 
 
