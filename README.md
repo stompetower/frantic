@@ -161,7 +161,7 @@ Mozilla Public License 2.0, see [LICENSE](LICENSE).
 
 [Thom Zwagers](https://github.com/thomzwg) did most of the work for this repository, like reverse-engineering lost source code. He also made the source code suitable for the Glass cross-assembler. 
 André Ligthart did the documentation and the comments in the `replayer.asm` file. [ANMA](https://www.msx.org/wiki/ANMA) (André Ligthart and Martijn Maatjens) made the original game.
-Grauw / Laurens Holst made the [Glass cross-assembler](http://www.grauw.nl/projects/glass/) used to build the source files.
+Grauw / [Laurens Holst](http://www.grauw.nl/about/) made the [Glass cross-assembler](http://www.grauw.nl/projects/glass/) used to build the Z80 logic.
 
 ## History
 
