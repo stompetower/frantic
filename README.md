@@ -178,7 +178,7 @@ Besides the source code (and the necessary game binaries), this repository inclu
 
 - All jobs / stages extracted as [`.png` images](../../tree/main/_extra/_jobs_as_png_maps).
 - The [map_maker](../../tree/main/_extra/_jobs_as_png_maps/_map_maker) (C# code) that created these images.
-- The map (tiles) part of all [Jobs in `.asm` format](../../tree/main/jobs/_extra) (alternative to the [binary format](../../tree/main/jobs)).
+- The map (tiles) part of all [Jobs in `.asm` format](../../tree/main/jobs/_maps_in_asm) (alternative to the [binary format](../../tree/main/jobs)).
 - [History documents](../../tree/main/_extra/_history) about Frantic.
 - [The tools](../../tree/main/_extra/_history_tools) ANMA used in 1992.
 - A [manual](../../tree/main/mus/_tracker_RED) of the used music tracker RED with a [list of all effects](../../blob/main/mus/_tracker_RED/RED_EFFECTS.md).
