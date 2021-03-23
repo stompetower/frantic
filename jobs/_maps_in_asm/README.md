@@ -34,11 +34,11 @@ DB 09CH, 001H, 000H, 001H, 000H, 001H, 000H, 080H, 084H, 001H, 000H, 001H, 000H,
                       |     |                  |    |           010H to 01FH = 4x4 background decoration
 00CH to 00FH = 2x2 background                  |    |
                    decoration                  |    084H = cracked platform
-				                               |    
+                                               |    
                                                080H = normal platform
 ```
 
-By analyzing the `C#` code in the [FranticMapMaker](/stompetower/frantic/tree/main/_extra/_jobs_as_png_maps/_map_maker), you can learn how to interpret all the tiles in these `map?.asm` files.
+By analyzing the `C#` code in the [FranticMapMaker](../../../../tree/main/_extra/_jobs_as_png_maps/_map_maker), you can learn how to interpret all the tiles in these `map?.asm` files.
 
 
 
