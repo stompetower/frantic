@@ -1,4 +1,4 @@
-# Overview of graphics in VRAM
+# Sprite patterns - all images
 
 ## During intro & story
 
