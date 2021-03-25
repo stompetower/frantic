@@ -2,7 +2,7 @@
 
 ![result](result_1_original.jpg)
 
-This piece of custom build hardware was used to connect the Philips Music Keyboard NMS 1160 to ANMA's tracker RED.
+This piece of custom build hardware was used to use the Philips Music Keyboard (NMS 1160) with ANMA's tracker RED.
 
 ![keyboard](music_keyboard_NMS1160.jpg)
 

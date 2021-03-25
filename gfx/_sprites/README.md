@@ -77,8 +77,8 @@ Note that there are max 2 skewers, 5 enemies and 2 moving/hovering platforms on 
 
 ## Sprite Pattern Table during game play
 
-The sprite pattern table can hold 64 patterns of 16x16 pixels, of which 32 can be displayed at once (see Attribute table above).
-However, there are 256 patterns (48 + 80 + 128) needed in Frantic during game play, as you can see in the directory `gfx/_final_patterns`.
+The Sprite Pattern table can hold 64 patterns of 16x16 pixels, of which 32 can be displayed at once (see Attribute table above).
+However, there are 256 patterns (48 + 80 + 128) needed in Frantic during game play, as you can see in the directory `gfx/_sprites/_final_patterns`.
 
 The strategy used to overcome this problem is to dynamically copy sprite pattern data to the Sprite Pattern table in VRAM for the the player Franc, the enemies and the hovering platforms.
 
@@ -88,7 +88,7 @@ The remaining 16 sprite patterns are dynamically copied from another VRAM locati
 Which sprites patterns are copied depends on which enemies are visible at that time. 
 It also depends on which frame of each sprite animation is to be shown. So the remaining 16 sprite patterns are used as follows:
 
-What | Number of patterns | Info
+What | How many patterns | Info
 ---- | ----------------- | ------
 player Franc | 4 | current frame of player (looking left / right, walking / jumping / falling / bending down)
 enemies | 10 | current frame of each of the 5 enemies (2 patterns per enemy)

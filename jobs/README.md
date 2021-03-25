@@ -7,8 +7,8 @@ Each `.JOB` file is made up of two separate parts, which are simply concatenated
 Instead of using FREditor, the tiles can also be edited in text (this is more awkward). Look at the `map?.asm` files in the [`_maps_in_asm`](../../../tree/main/jobs/_maps_in_asm) subdirectory.
 It gives insight in the simple structure of these tile maps.
 
-See the subdirectory [`_freditor`](../../../tree/main/jobs/_freditor) for more info about FREditor and how to edit tile maps.
-The tool itself is in the `_freditor` subdirectory of this repository. It's also available as part of [this download](https://www.msx.org/downloads/anmas-frantic-sources).
+See the subdirectory [`jobs/_freditor`](../../../tree/main/jobs/_freditor) for more info about FREditor and how to edit tile maps.
+The tool itself is in that subdirectory of this repository. It's also available as part of [this download](https://www.msx.org/downloads/anmas-frantic-sources).
 You need a real MSX-2 (or emulator).
 
 To see what content is in the `.JOB` file, look at the `.png` images [here](../../../tree/main/_extra/_jobs_as_png_maps).
@@ -71,7 +71,7 @@ Suppose you want to change Job 3, then follow this workflow:
 - Copy `MAP3.BIN` from the virtual MSX Disk to this directory, for example use a tool like [Disk-Manager](http://www.lexlechz.at/en/software/DiskMgr.html).
 
 ![freditor](./_freditor/freditor.png)
-*Above: FREditor with addresses shown after `[SELECT]` key pressed. For example, the 2 bombs are at `08185H` and `081BBH`.*
+*Above: FREditor with addresses shown after `[SELECT]` key pressed. For example, the 2 bombs are at `8185` and `81BB` (hex notation).*
 
 Now edit `stage3.asm`. Here you can edit:
  - Color palettes of Job 3 graphics.
@@ -93,7 +93,7 @@ If you don't want to rebuild all each time, you can simply make your own script:
 - Concatenate the 2 parts (like: `copy MAP3.BIN/B + STAGE3.BIN/B FRANTIC3.JOB`).
 
 Now you have `FRANTIC3.JOB` which can be used with the original game.
-It contains the all backgrounds (with platforms) as well as meta-data, moving enemies and moving platforms.
+It contains the all backgrounds (with platforms) as well as meta-data, moving enemies and moving/hovering platforms.
  
 
 ## Moving enemies in `stage?.asm`
@@ -103,7 +103,7 @@ The moving enemies (like bird, spider, etc.) and the hovering platforms are the 
 All location addresses are `04000H` lower than shown in FReditor. 
 For example, when you see address `8052` in FReditor (use `[SELECT]` key), you need to edit:
 `DW 04052H` (or:  `DB 052H,040H` ).
-Such location addresses are used for Franc's start position and within the list of enemies/moving platforms.
+Such location addresses are used for Franc's start position and for each of the enemies and moving/hovering platforms.
 
 #### Each enemy is described with 5 bytes:
 
@@ -162,10 +162,10 @@ DB  0ECH,048H,11,7,36+128+64 ; starts at 048ECH, moves vertical (+64), moves 36 
 ```
 Notes:
 - The platforms at `046ACH` and `048ECH` are ONE AND THE SAME!! For technical reasons, 
-only VERTICALLY moving platforms need to be described twice (address top position and address bottom position). Also note that the `ID` is the same (is this example: `11`), so it's ONE moving platform!
+only VERTICALLY hovering platforms need to be described twice (address top position and address bottom position). Also note that the `ID` is the same (is this example: `11`), so it's ONE moving platform!
 - The top and bottom positions (here `046ACH` and `048ECH`) are related like this:
 `top_address + (16 * amount_of_moving) = bottom_address`.  Example: `046ACH + (16 * 36) = 048ECH`.
-- No more than 2 moving platforms can be visible at one time. When 2 moving platforms need to be
+- No more than 2 hovering platforms can be visible at one time. When 2 hovering platforms need to be
 visible at one time, ensure to use enemy type `6` and `7` (not `6` and `6`, also not `7` and `7`). So there can only by one type `6` and one type `7` (both hovering platforms) be visible at the same time. For other enemies (birds, spiders, etc) this constraint does not apply.
 
 

@@ -22,7 +22,7 @@ DB 0C1H, 001H, 000H, 001H, 000H, 081H, 000H, 001H, 000H, 001H, 000H, 001H, 000H,
     ^                             ^
     |                             |
     |                             03FH = spring shoes (item)
-    0C0H/0D2H/0C1H = left elevator number 2
+    0C0H/0D2H/0C1H = left elevator door (number 2)
 
 DB 09CH, 001H, 000H, 001H, 000H, 080H, 080H, 080H, 000H, 001H, 010H, 011H, 012H, 013H, 000H, 09DH
 DB 09CH, 003H, 002H, 003H, 002H, 007H, 006H, 007H, 002H, 003H, 014H, 015H, 016H, 017H, 002H, 09DH

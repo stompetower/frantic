@@ -1,7 +1,7 @@
 # Sprite designs
 
 
-In this directory you can see how the game sprites were designed. Most sprites make use of a VDP feature to get 3 colors.
+In this directory you can see how the game sprites were designed. Most sprites make use of a VDP feature to get 3 colors (possible on each horizontal line).
 
 ![sprite design](README.png)
 
@@ -16,9 +16,9 @@ The original designs are available in [this download](https://www.msx.org/downlo
 
 The `MSX-BASIC` tools that convert these designs to 'sprite pattern data' and 'sprite color data' are probably lost.
 
-To see how the final sprite patterns look (without color information), look at the `../_final_patterns` directory.
+To see how the final sprite patterns look (without color information), look at the `gfx/_sprites/_final_patterns` directory.
 
-All sprites are included in the game files `FRANTIC1.GRP` (intro sprites) and `FRANTIC3.GRP` (game sprites). The information in the `gfx/_vram_pages_in_png` directory explains exactly where the 'sprite pattern data' and 'sprite color data' is in VRAM.
+All sprites are included in the game files `FRANTIC1.GRP` (intro & story sprites) and `FRANTIC3.GRP` (game sprites). The information in the `gfx/_vram_pages_in_png` directory explains exactly where the 'sprite pattern data' and 'sprite color data' is in VRAM.
 
 
 

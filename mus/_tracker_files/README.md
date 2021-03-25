@@ -50,7 +50,7 @@ Finally, the workflow is as follows:
 
 ## More info
 
-See the sub-directory `_tracker_RED` for more info about the tracker RED like:
+See the sub-directory [`mus/_tracker_RED`](../../../../tree/main/mus/_tracker_RED) for more info about the tracker RED like:
 - a short manual.
 - a complete list of all effects.
 - all custom instruments.
