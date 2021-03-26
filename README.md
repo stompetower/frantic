@@ -155,7 +155,7 @@ The game has 6 Jobs (=stages). Each Job has its own graphics and also two songs,
 
 ## License
 
-Mozilla Public License 2.0, see [LICENSE](LICENSE).
+Mozilla Public License 2.0, see the [LICENSE](LICENSE) file. Contact the owner of this repository (stompetower) if you are restricted by this license.
 
 ## Credits
 
