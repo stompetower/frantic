@@ -19,9 +19,16 @@
 ;   - PSG (=Programmable Sound Generator) refers to the AY-3-8910 sound chip (*).
 ;   - FM, FM/OPLL, OPLL all refer to the Yamaha YM2413 sound chip (*).
 ;                                                (*) or compatible
-;   - if a PSG sound effect is active, it temporarily takes over channel PSG1.
-;   - if a OPLL/FM sound effect is active, it temporarily takes over channel FM1.
 ;   - effect data (for music) is another concept than sound effect data.
+; ================================================================================
+; Features:
+;   - Play music simultaneous on both chips (PSG and FM/OPLL)
+;   - 81 effects (volume sliding, pitch sliding, vibrations, arpeggio, PSG drums, etc)
+;   - Volume fade in, volume fade out
+;   - Volume balance of PSG and FM/OPLL can be set (=max volume for each chip)
+;   - Sound effects on PSG and FM/OPLL (on either one, or on both simultaneously)
+;   - A PSG sound effect temporarily takes over channel PSG1
+;   - A FM/OPLL sound effect temporarily takes over channel FM1
 ; ================================================================================
 ; Credits:
 ;   - Andre Ligthart wrote the original source code in 1991/1992 (but it was lost)
