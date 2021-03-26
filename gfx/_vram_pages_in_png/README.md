@@ -11,7 +11,12 @@ file in this directory | game phase | which VRAM page
 `intro_page1_palette_X.png` | intro + story | 1
 `intro_page2_palette_X.png` | intro + story | 2
 `intro_page3_palette_X.png` | intro + story | 3
-`game_job?_page1.png` | game play | 1
+`game_job1_page1.png` | game play, job 1 | 1
+`game_job2_page1.png` | game play, job 2 | 1
+`game_job3_page1.png` | game play, job 3 | 1
+`game_job4_page1.png` | game play, job 4 | 1
+`game_job5_page1.png` | game play, job 5 | 1
+`game_job6_page1.png` | game play, job 6 | 1
 `game_page2_palette_X.png` | game play | 2
 `ending_page1.png` | ending | 1
 `ending_page2_palette_X.png` | ending | 2
