@@ -5,21 +5,21 @@ The following table shows the relationship between the source code files and the
 
 Source code file | Resulting binary file | What's in it
 -------- | ---- | ------
-**loader.gen** | FRANTIC.LOD | Loading files, uncrunch graphics, copy protection [*]
+**loader.asm** | FRANTIC.LOD | Loading files, uncrunch graphics, copy protection [*]
  | | |
-**replayer.gen** | FRANTIC.REP | replayer for music and sound effects
+**replayer.asm** | FRANTIC.REP | replayer for music and sound effects
  | | |
-**intro.gen** | FRANTIC1.BIN | Intro Main code
-*amazing.gen* | FRANTIC1.BIN | Amazing ANMA (code + sound effects)
-*bubble.gen* | FRANTIC1.BIN | Amazing ANMA (mainly data)
-*titel.gen* | FRANTIC1.BIN | Title screen, story, credits
+**intro.asm** | FRANTIC1.BIN | Intro Main code
+*amazing.asm* | FRANTIC1.BIN | Amazing ANMA (code + sound effects)
+*bubble.asm* | FRANTIC1.BIN | Amazing ANMA (mainly data)
+*titel.asm* | FRANTIC1.BIN | Title screen, story, credits
  | | |
-**game.gen** | FRANTIC2.BIN | Game main code
-*subs.gen* | FRANTIC2.BIN | Sub-routines, sound-effects, palette data, etc.
-*praat.gen* | FRANTIC2.BIN | Cramp talking, talking when job done
-*vrij.gen* | FRANTIC2.BIN | Enemy behaviour
+**game.asm** | FRANTIC2.BIN | Game main code
+*subs.asm* | FRANTIC2.BIN | Sub-routines, sound-effects, palette data, etc.
+*praat.asm* | FRANTIC2.BIN | Cramp talking, talking when job done
+*vrij.asm* | FRANTIC2.BIN | Enemy behaviour
  | | |
-**einde.gen** | FRANTIC3.BIN | Game Ending Demo
+**einde.asm** | FRANTIC3.BIN | Game Ending Demo
 
 File names in **bold font** represent the main source code files (*italic* file names are includes).
 
