@@ -47,7 +47,7 @@ These (more simple) sprites do not use the 3-color feature:
 - spit
 - water drop
 
-## Sprite Attribute Table during game play
+## Sprite Attribute Table (during game play)
 
 Sprite attributes (Y, X, pattern, color) are kept in RAM and copied to VRAM every interrupt.
 See code-file `subs.asm`, label `SPRITEATR` (32 x 4 bytes of data are defined here). 
@@ -75,7 +75,7 @@ Sprite index: | Usage:
 Note that there are max 2 skewers, 5 enemies and 2 moving/hovering platforms on the screen simultaneously.
 
 
-## Sprite Pattern Table during game play
+## Sprite Pattern Table (during game play)
 
 The Sprite Pattern table can hold 64 patterns of 16x16 pixels, of which 32 can be displayed at once (see Attribute table above).
 However, there are 256 patterns (48 + 80 + 128) needed in Frantic during game play, as you can see in the directory `gfx/_sprites/_final_patterns`.
@@ -95,7 +95,7 @@ enemies | 10 | current frame of each of the 5 enemies (2 patterns per enemy)
 hovering platforms | 2 | current frame of the hovering platforms
 
 
-## Location of sprite data in VRAM
+## Location of sprite data in VRAM (during game play)
 
 
 Which sprite data | VRAM location | VRAM location in hex | Info

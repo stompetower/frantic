@@ -1,7 +1,7 @@
 # Frantic (MSX-2 game, made in 1992)
 
 The [Z80](https://en.wikipedia.org/wiki/Zilog_Z80) (8-bit microprocessor) source code is provided here, as it was written in 1992 by André Ligthart from the [MSX](https://en.wikipedia.org/wiki/MSX) group [ANMA](https://www.msx.org/wiki/ANMA), with only the following modifications:
-* the source code is now compatible with the [Z80 Glass cross-assembler](http://www.grauw.nl/projects/glass/) (written in Java). 
+* the [source code](../../tree/main/src) is now compatible with the [Z80 Glass cross-assembler](http://www.grauw.nl/projects/glass/) (written in Java). 
 * [`replayer.asm`](../../blob/main/src/replayer.asm) (music/sound effect replayer) has been commented extensively.
 
 Because only comments and assembler directives (like `DB`) have changed, the resulting binaries are identical to the original binaries ([with a few exceptions](../../blob/main/src/MODIFICATIONS.md)).
@@ -177,7 +177,7 @@ See more about history in the [`_extra`](../../tree/main/_extra) directory.
 Besides the source code (and the necessary game binaries), this repository includes much more you might not expect:
 
 - All jobs / stages extracted as [`.png` images](../../tree/main/_extra/_jobs_as_png_maps).
-- The [map_maker](../../tree/main/_extra/_jobs_as_png_maps/_map_maker) (C# code) that created these images.
+- The [FranticMapMaker](../../tree/main/_extra/_jobs_as_png_maps/_map_maker) (C# code) that created these images.
 - The map (tiles) part of all [Jobs in `.asm` format](../../tree/main/jobs/_maps_in_asm) (alternative to the [binary format](../../tree/main/jobs)).
 - [History documents](../../tree/main/_extra/_history) about Frantic.
 - [The tools](../../tree/main/_extra/_history_tools) and [the hardware](../../blob/main/_extra/_history_tools/USED_HARDWARE.md) ANMA used in 1992.
